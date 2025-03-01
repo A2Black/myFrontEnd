@@ -31,7 +31,7 @@
                   <!-- 登录卡片底部外壳-->
                   <div class="footer-wrapped">
                     <div class="forget-password">
-                      <span class="forget-password-button">忘记密码?</span>
+                      <span class="forget-password-button" @click="fogetPassWord">忘记密码?</span>
                     </div>
 
                     <!-- 登录按钮 -->
@@ -78,11 +78,15 @@
       </el-footer>
     </el-container>
   </div>
+  <forget ref="fogetPass"></forget>
 </template>
 
 <!-- lang = "ts"声明当前<script>标签中使用 ​TypeScript​ 语言,setup启用Vue3的 ​Composition API 语法糖 -->
 <script lang = "ts" setup> 
   import { ref, reactive } from 'vue'
+  // 导入
+  import forget from "./components/foget_password.vue"
+
   const activeName = ref('first') //打开网页默认指向登录或是注册
 
   // 表单接口
@@ -104,6 +108,13 @@
     password: '',
     repassword: '',
   })
+
+  const fogetPass = ref()
+  // 打开忘记密码弹窗
+  const fogetPassWord = ()=>{
+    fogetPass.value.open()
+  }
+
 </script>
 
 <!-- 声明当前<style>标签中使用SCSS/SASS​预处理器语法（而非默认的CSS）,scoped启用样式作用域,使CSS仅对当前组件生效,避免污染全局样式 -->
