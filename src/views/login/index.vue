@@ -136,7 +136,7 @@
   .el-main {
     // 设置login页面背景图
     background-image: url('@/assets/loginBackgroundImage.png');
-    height: 700px;
+    height: 750px;
     --el-main-padding: 0;
     // 登录外壳
     .login-wrapped {
