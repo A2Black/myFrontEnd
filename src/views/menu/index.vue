@@ -69,7 +69,28 @@
             </el-menu>
         </el-aside>
         <el-container>
-            <el-header>头部</el-header>
+            <el-header>
+                <!-- 头部左侧内容 -->
+                <span class="header-left-content">尊敬的领航员，欢迎你的登录</span>
+                <!-- 头部右侧内容 -->
+                 <div class="header-right-content">
+                    <el-icon :size="24"><ChatLineRound /></el-icon>
+                    <el-avatar :size="24" :src="circleUrl" />
+                    <!-- 下拉菜单 -->
+                    <el-dropdown>
+                        <span class="el-dropdown-link">
+                            <el-icon :size="24"><Tools /></el-icon>
+                        </span>
+                        <template #dropdown>
+                        <el-dropdown-menu>
+                            <el-dropdown-item>账号设置</el-dropdown-item>
+                            <el-dropdown-item>修改密码</el-dropdown-item>
+                            <el-dropdown-item>退出登录</el-dropdown-item>
+                        </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
+                 </div>
+            </el-header>
             <el-main>
                 <!-- 点击菜单时会渲染对应的路由页面 -->
                 <router-view></router-view>
@@ -84,10 +105,19 @@
     import {
         Menu as IconMenu,
     } from '@element-plus/icons-vue'
-    import ref from 'vue'
+    import { reactive, toRefs, ref } from 'vue'
+
+    const state = reactive({
+    circleUrl:
+        'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+    })
+
+    const { circleUrl} = toRefs(state)
+
 </script>
 
 <style lang="scss" scoped>
+    // 侧边栏
     .el-aside{
         height: 100vh;
         background-color: #f1f3f6;
@@ -96,7 +126,7 @@
         overflow: hidden;
         // 菜单
         .el-menu{
-            background-color: #f1f3f6;
+            background-color: #fff;
             width: 210px;
             height: 100vh;
             border-right: 0px;
@@ -107,17 +137,57 @@
             padding: 20px;
             display: flex;
             justify-content: center;
-            color: #fff;  //字体颜色
+            font-weight: 600;
+            color: #323639;  //字体颜色
             // 背景色
-            background-color: #f1f3f6;
+            background-color: #fff;
         }
+
     }
+
+    // 头部部分
+    .el-header{
+        display: flex;
+        height: 55px;
+        background-color: #fff;
+        color: #323639;
+        align-items: center;
+        justify-content: space-between;
+        // 左侧欢迎语部分
+        .header-left-content{
+            font-size: 14px;
+        }
+        // 右侧头部内容
+        .header-right-content{
+            width: 160px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+    }
+
+    .el-main {
+    --el-main-padding: 20px;
+    box-sizing: border-box;
+    display: block;
+    flex: 1;
+    flex-basis: auto;
+    overflow: auto;
+    padding: var(--el-main-padding);
+    background-color: #f1f3f6;
+    }
+
+
     // 添加样式穿透设置悬浮时菜单选项背景色，无子菜单项
     :deep(.el-menu-item:hover){
         background-color: #d9e9fb;
+        color: #409eff;
     }
     // 有子菜单项
     :deep(.el-sub-menu__title:hover){
         background-color: #d9e9fb;
+        color: #409eff;
     }
+
 </style>
