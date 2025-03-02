@@ -36,7 +36,7 @@
 
                     <!-- 登录按钮 -->
                      <div class="footer-button">
-                      <el-button type="primary" round>登录</el-button>
+                      <el-button type="primary" @click="Login" round>登录</el-button>
                      </div>
 
                    <!-- 还没有账号?马上注册 -->
@@ -60,7 +60,7 @@
                   </el-form-item>
                   <!-- 注册按钮 -->
                   <div class="footer-button">
-                    <el-button type="primary" round>注册</el-button>
+                    <el-button type="primary"  @click="Register" round>注册</el-button>
                   </div>
                 </el-form>
               </el-tab-pane>
@@ -84,10 +84,23 @@
 <!-- lang = "ts"声明当前<script>标签中使用 ​TypeScript​ 语言,setup启用Vue3的 ​Composition API 语法糖 -->
 <script lang = "ts" setup> 
   import { ref, reactive } from 'vue'
+  // 导入消息提示
+  import { ElMessage } from 'element-plus'
   // 导入
   import forget from "./components/foget_password.vue"
+  // 调用注册和登录的接口
+  import {
+    login,register
+  }from'@/api/login'
+  //登录用路由跳转
+  import { useRouter } from 'vue-router'
 
+  //import { configProviderProps } from 'element-plus'
+ 
   const activeName = ref('first') //打开网页默认指向登录或是注册
+
+  // 创建实例
+  const router = useRouter()
 
   // 表单接口
   interface formData {
@@ -109,6 +122,51 @@
     repassword: '',
   })
 
+  // 登录函数
+  const Login = async()=>{
+    const res = await login(loginData)
+    const {token} = res.data
+    if(res.data.message == "登录成功"){
+      ElMessage({
+          message: '登录成功！',
+          type: 'success',
+      })
+      // 将token存在localStorage
+      localStorage.setItem('token', token)
+      // 路由跳转到首页
+      router.push('/home')
+    }else{
+      ElMessage.error('登录失败，请检查账号和密码是否正确！')
+    }
+  }
+
+  // 注册函数
+  const Register = async() => {
+    if(registerData.password == registerData.repassword){
+      const res = await register(registerData)
+      console.log(res)
+      if(res.data.message == "注册账号成功"){
+        ElMessage({
+          message: '恭喜，注册成功！',
+          type: 'success',
+        })
+        activeName.value = 'first';
+      }
+      else if(res.data.message == "账号已存在"){
+        ElMessage({
+          message: '账号已存在！',
+          type: 'warning',
+        })
+      }
+      else{
+        ElMessage.error('注册失败，请检查输入数据是否正确')
+      }
+      }else{
+        ElMessage.error('两次密码不一致，请重新输入！')
+      }
+  }
+
+  // 忘记密码弹窗
   const fogetPass = ref()
   // 打开忘记密码弹窗
   const fogetPassWord = ()=>{

@@ -85,7 +85,7 @@
                         <el-dropdown-menu>
                             <el-dropdown-item>账号设置</el-dropdown-item>
                             <el-dropdown-item>修改密码</el-dropdown-item>
-                            <el-dropdown-item>退出登录</el-dropdown-item>
+                            <el-dropdown-item @click="backLogin">退出登录</el-dropdown-item>
                         </el-dropdown-menu>
                         </template>
                     </el-dropdown>
@@ -106,6 +106,8 @@
         Menu as IconMenu,
     } from '@element-plus/icons-vue'
     import { reactive, toRefs, ref } from 'vue'
+    // 导入路由跳转
+    import { useRouter } from 'vue-router'
 
     const state = reactive({
     circleUrl:
@@ -113,6 +115,13 @@
     })
 
     const { circleUrl} = toRefs(state)
+    // 创建实例
+    const router = useRouter()
+    // 退出登录
+    const backLogin = ()=>{
+        // 路由跳转到首页
+        router.replace('/login')
+    }
 
 </script>
 

@@ -7,7 +7,7 @@ import {
 
 const routes = [{
 		path:'/',
-		redirect:'/menu'
+		redirect:'/login'      //路由重定向，默认打开页面
 	},
 	{
 		name:'login',
