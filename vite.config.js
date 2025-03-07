@@ -3,16 +3,24 @@ import {
 } from 'vite'
 import vue from '@vitejs/plugin-vue'
 //配置src的两种快捷方式
-import path from 'path'
-// import { 
-// 	resolve ,
-// } from 'path'
+//import path from 'path'
+import { 
+	resolve ,
+} from 'path'
 
+import {
+	createSvgIconsPlugin
+} from 'vite-plugin-svg-icons'
 
 const pathResolve = dir => resolve(__dirname, dir)
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(),
+    createSvgIconsPlugin({
+			iconDirs: [resolve(process.cwd(), 'src/assets/svg')],
+			symbolId: 'icon-[dir]-[name]',
+		}),
+  ],
   server:{      //server服务器
 	  port:8080,    //默认端口号
 	  open:true,    //自动打开默认浏览器
@@ -20,9 +28,8 @@ export default defineConfig({
   },
   // 配置路径别名
   resolve: {
-	  alias: {
-      '@': path.resolve(__dirname,'src')
-		  // '@': pathResolve('./src') // 设置 `@` 指向 `src` 目录
-    }
-  }
+		alias: {
+			'@': pathResolve('./src') // 设置 `@` 指向 `src` 目录
+		}
+	}
 })

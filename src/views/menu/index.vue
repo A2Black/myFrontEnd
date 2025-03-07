@@ -62,7 +62,7 @@
                     <el-icon><Filter /></el-icon>
                     <span>登录日志</span>
                 </el-menu-item>
-                <el-menu-item index="9">
+                <el-menu-item index="set">
                     <el-icon><Setting /></el-icon>
                     <span>系统设置</span>
                 </el-menu-item>
@@ -177,7 +177,7 @@
     }
 
     .el-main {
-    --el-main-padding: 20px;
+    --el-main-padding: 0;
     box-sizing: border-box;
     display: block;
     flex: 1;

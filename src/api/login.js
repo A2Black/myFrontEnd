@@ -5,7 +5,7 @@ import instance from "@/http/index.js";
 // 注册接口
 export const register = data => {
     // 传入两个数据，账号和密码
-    // 创建结构复制，从data里面获取账号和密码
+    // 创建解构赋值，从data里面获取账号和密码
     const {
         account,
         password
@@ -25,7 +25,7 @@ export const register = data => {
 // 登录接口
 export const login = data => {
     // 传入两个数据，账号和密码
-    // 创建结构复制，从data里面获取账号和密码
+    // 创建解构赋值，从data里面获取账号和密码
     const {
         account,
         password
@@ -38,6 +38,41 @@ export const login = data => {
         data:{
             account,
             password
+        }
+    })
+}
+
+// 登陆页面验证邮箱和账户接口
+export const verify = data => {
+    // 传入两个数据，账号和密码
+    // 创建解构赋值，从data里面获取账号和密码
+    const {
+        account,
+        email
+    } = data
+    // 调用instanc
+    return instance({
+        url:'user/verifyAccountAndEmail',
+        method:'POST',
+        // 传入数据
+        data:{
+            account,
+            email
+        }
+    })
+}
+
+// 登陆页面重置密码
+export const reset = (id,newPassword) => {
+    // 传入两个数据，id和新密码
+    // 调用instanc
+    return instance({
+        url:'user/changePasswordInLogin',
+        method:'POST',
+        // 传入数据
+        data:{
+            id,
+            newPassword
         }
     })
 }
