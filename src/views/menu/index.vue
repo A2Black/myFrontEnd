@@ -177,7 +177,7 @@
     }
 
     .el-main {
-    --el-main-padding: 0;
+    --el-main-padding: 0px;
     box-sizing: border-box;
     display: block;
     flex: 1;
