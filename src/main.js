@@ -4,6 +4,8 @@ import {
 import App from './App.vue'
 // 导入路由
 import router from './router'
+// 导入pinia
+import pinia from './store/index'
 // 导入ElementPlus Icon
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // 导入ElementPlus
@@ -29,3 +31,5 @@ app.use(ElementPlus, {
 
 app.use(router) // 确保路由挂载
 app.mount('#app') // 最终挂载到 #app
+// 注册pinia
+app.use(pinia)

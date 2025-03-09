@@ -75,7 +75,7 @@
                 <!-- 头部右侧内容 -->
                  <div class="header-right-content">
                     <el-icon :size="24"><ChatLineRound /></el-icon>
-                    <el-avatar :size="24" :src="circleUrl" />
+                    <el-avatar :size="24" :src="userStore.imageUrl" />
                     <!-- 下拉菜单 -->
                     <el-dropdown>
                         <span class="el-dropdown-link">
@@ -108,13 +108,16 @@
     import { reactive, toRefs, ref } from 'vue'
     // 导入路由跳转
     import { useRouter } from 'vue-router'
+    // 导入useUserInforStore
+    import { useUserInforStore } from '@/store/userinfo'
+    // 创建实例
+    const userStore = useUserInforStore()
 
     const state = reactive({
     circleUrl:
         'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
     })
-
-    const { circleUrl} = toRefs(state)
+    
     // 创建实例
     const router = useRouter()
     // 退出登录
@@ -160,6 +163,7 @@
         height: 55px;
         background-color: #fff;
         color: #323639;
+        border-left:1px solid #e4e4e7;
         align-items: center;
         justify-content: space-between;
         // 左侧欢迎语部分
@@ -185,6 +189,7 @@
     overflow: auto;
     padding: var(--el-main-padding);
     background-color: #f1f3f6;
+    border:1px solid #e4e4e7;
     }
 
 

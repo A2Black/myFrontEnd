@@ -94,13 +94,15 @@
   }from'@/api/login'
   //登录用路由跳转
   import { useRouter } from 'vue-router'
+  // 导入定义好的storage
+  import { useUserInforStore } from '@/store/userinfo'
 
-  //import { configProviderProps } from 'element-plus'
- 
   const activeName = ref('first') //打开网页默认指向登录或是注册
 
   // 创建实例
   const router = useRouter()
+  // 创建实例
+  const store = useUserInforStore()
 
   // 表单接口
   interface formData {
@@ -125,14 +127,17 @@
   // 登录函数
   const Login = async()=>{
     const res = await login(loginData)
-    const {token} = res.data
     if(res.data.message == "登录成功"){
+      const { id } = res.data.results
+      const {token} = res.data
       ElMessage({
           message: '登录成功！',
           type: 'success',
       })
       // 将token存在localStorage
       localStorage.setItem('token', token)
+      // 使用store中的获取用户信息方法
+      store.userInfo(id)
       // 路由跳转到首页
       router.push('/home')
     }else{
