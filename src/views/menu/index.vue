@@ -71,11 +71,12 @@
         <el-container>
             <el-header>
                 <!-- 头部左侧内容 -->
-                <span class="header-left-content">尊敬的领航员，欢迎你的登录</span>
+                <span class="header-left-content">尊敬的{{ userStore.name }}，欢迎你的登录</span>
                 <!-- 头部右侧内容 -->
                  <div class="header-right-content">
                     <el-icon :size="24"><ChatLineRound /></el-icon>
-                    <el-avatar :size="24" :src="userStore.imageUrl" />
+                    <!-- 头部头像mini版显示 -->
+                    <el-avatar class="avatarFrame" :size="32" :src="userStore.imageUrl" />
                     <!-- 下拉菜单 -->
                     <el-dropdown>
                         <span class="el-dropdown-link">
@@ -113,11 +114,12 @@
     // 创建实例
     const userStore = useUserInforStore()
 
-    const state = reactive({
-    circleUrl:
-        'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-    })
-    
+    // 顶部头像
+    // const state = reactive({
+    // circleUrl:
+    //     'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+    // })
+
     // 创建实例
     const router = useRouter()
     // 退出登录
@@ -176,6 +178,11 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
+        }
+
+        // 头像框
+        .avatarFrame{
+            border:2px solid #e4e4e7;
         }
 
     }

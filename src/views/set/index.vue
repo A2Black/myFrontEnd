@@ -34,7 +34,7 @@
                     <div class="account-infor-wrapped">
                         <span>密码：</span>
                         <div class="account-infor-content">
-                            <el-button type="primary">修改密码</el-button>
+                            <el-button type="primary" @click="openChangePassword">修改密码</el-button>
                         </div>
                     </div>
                     <!-- 用户姓名盒子 -->
@@ -44,7 +44,7 @@
                             <el-input v-model="userStore.name"></el-input>
                         </div>
                         <div class="account-save-button">
-                            <el-button type="primary">保存</el-button>
+                            <el-button type="primary" @click="saveName">保存</el-button>
                         </div>
                     </div>
                     <!-- 用户性别盒子 -->
@@ -57,7 +57,7 @@
                             </el-select>
                         </div>
                         <div class="account-save-button">
-                            <el-button type="primary">保存</el-button>
+                            <el-button type="primary" @click="saveSex">保存</el-button>
                         </div>
                     </div>
                     <!-- 用户身份盒子 -->
@@ -83,7 +83,7 @@
                             <el-input v-model="userStore.email"></el-input>
                         </div>
                         <div class="account-save-button">
-                            <el-button type="primary">保存</el-button>
+                            <el-button type="primary" @click="saveEmail">保存</el-button>
                         </div>
                     </div>
                 </el-tab-pane>
@@ -93,6 +93,8 @@
             </el-tabs>
         </div>
     </div>
+    <!-- 修改密码弹窗 -->
+    <change ref="changeP"></change>
 </template>
 
 <script lang="ts" setup>
@@ -108,10 +110,15 @@
     import breadCrumb from '@/components/bread_crumb.vue'
     // 导入useUserInforStore
     import { useUserInforStore } from '@/store/userinfo'
+    // 导入修改姓名,性别,邮箱的api
+    import { changeName,changeSex,changeEmail } from '@/api/userinfor'
+    // 导入修改密码组件
+    import change from './components/change_password.vue'
     // 导入绑定账号
-    import { bind } from '@/api/userinfor'
+    import { bind, changePassword } from '@/api/userinfor'
     // 创建实例
     const userStore = useUserInforStore()
+    const changeP  = ref()
     // 默认打开的标签页
     const activeName = ref('first')
     // 面包屑
@@ -162,6 +169,54 @@
         department:'',
         email:''
     })
+
+    // 打开密码弹窗
+    const openChangePassword =()=>{
+        changeP.value.open();
+    }
+
+    // 保存姓名的点击函数
+    const saveName = async()=>{
+        const res = await changeName(localStorage.getItem('id'),userStore.name)
+        console.log(res)
+        if(res.data.status == 0){
+                ElMessage({
+                message: '修改成功！',
+                type: 'success',
+                })
+            }else{
+                ElMessage.error('修改失败,请重新输入')
+            }
+    }
+
+        // 保存性别的点击函数
+        const saveSex = async()=>{
+        const res = await changeSex(localStorage.getItem('id'),userStore.sex)
+        console.log(res)
+        if(res.data.status == 0){
+                ElMessage({
+                message: '修改成功！',
+                type: 'success',
+                })
+            }else{
+                ElMessage.error('修改失败,请重新输入')
+            }
+    }
+
+        // 保存邮箱的点击函数
+        const saveEmail = async()=>{
+        const res = await changeEmail(localStorage.getItem('id'),userStore.email)
+        console.log(res)
+        if(res.data.status == 0){
+                ElMessage({
+                message: '修改成功！',
+                type: 'success',
+                })
+            }else{
+                ElMessage.error('修改失败,请重新输入')
+            }
+    }
+
 </script>
 
 <style lang="scss" scoped>

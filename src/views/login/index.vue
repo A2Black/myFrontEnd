@@ -134,6 +134,8 @@
           message: '登录成功！',
           type: 'success',
       })
+      // 将id存放在localStorage
+      localStorage.setItem('id', id)
       // 将token存在localStorage
       localStorage.setItem('token', token)
       // 使用store中的获取用户信息方法
