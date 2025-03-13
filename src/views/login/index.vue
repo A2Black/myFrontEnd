@@ -127,9 +127,9 @@
   // 登录函数
   const Login = async()=>{
     const res = await login(loginData)
-    if(res.data.message == "登录成功"){
-      const { id } = res.data.results
-      const {token} = res.data
+    if(res.message == "登录成功"){
+      const { id } = res.results
+      const {token} = res
       ElMessage({
           message: '登录成功！',
           type: 'success',
@@ -151,15 +151,15 @@
   const Register = async() => {
     if(registerData.password == registerData.repassword){
       const res = await register(registerData)
-      console.log(res)
-      if(res.data.message == "注册账号成功"){
+      //console.log(res)
+      if(res.message == "注册账号成功"){
         ElMessage({
           message: '恭喜，注册成功！',
           type: 'success',
         })
         activeName.value = 'first';
       }
-      else if(res.data.message == "账号已存在"){
+      else if(res.message == "账号已存在"){
         ElMessage({
           message: '账号已存在！',
           type: 'warning',

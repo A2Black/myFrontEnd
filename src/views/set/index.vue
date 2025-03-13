@@ -15,8 +15,7 @@
                                 class="avatar-uploader" action="http://127.0.0.1:3007/user/uploadAvatar"
                                 :show-file-list="false"
                                 :on-success="handleAvatarSuccess"
-                                :before-upload="beforeAvatarUpload"
-                            >
+                                :before-upload="beforeAvatarUpload">
                                 <img v-if="userStore.imageUrl" :src="userStore.imageUrl" class="avatar" />
                                 <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
                             </el-upload>
@@ -87,14 +86,71 @@
                         </div>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane label="公司信息" name="second">公司信息</el-tab-pane>
-                <el-tab-pane label="首页管理" name="third">首页管理</el-tab-pane>
+                <el-tab-pane label="公司信息" name="second">
+                    <div class="account-infor-wrapped">
+                        <span>公司名称：</span>
+                        <div class="account-infor-content">
+                            <el-input v-model="companyName"></el-input>
+                        </div>
+                        <div class="account-save-button">
+                            <el-button type="primary" @click="changeCompanyname">编辑公司名称</el-button>
+                        </div>
+                    </div>
+                    <div class="account-infor-wrapped">
+                        <span>公司介绍：</span>
+                        <div class="account-infor-content">
+                            <el-button type="primary" @click="openEditor(1)">编辑公司介绍</el-button>
+                        </div>
+                    </div>
+                    <div class="account-infor-wrapped">
+                        <span>公司架构：</span>
+                        <div class="account-infor-content">
+                            <el-button type="primary" @click="openEditor(2)">编辑公司架构</el-button>
+                        </div>
+                    </div>
+                    <div class="account-infor-wrapped">
+                        <span>公司战略：</span>
+                        <div class="account-infor-content">
+                            <el-button type="primary" @click="openEditor(3)">编辑公司战略</el-button>
+                        </div>
+                    </div>
+                    <div class="account-infor-wrapped">
+                        <span>公司高层：</span>
+                        <div class="account-infor-content">
+                            <el-button type="primary" @click="openEditor(4)">编辑公司高层</el-button>
+                        </div>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane label="首页管理" name="third">
+					<div class="home-wrapped">
+						<!-- 提示语 -->
+						<div class="tips">
+							<span>提示：点击图片框进行切换首页轮播图</span>
+						</div>
+						<!-- 轮播图部分 -->
+						<div class="swiper-wrapped" v-for="(item,index) in swiperData" :key='index'>
+							<div class="swiper-name">轮播图{{index+1}}:&nbsp;&nbsp;</div>
+							<el-upload
+								class="avatar-uploader"
+								action="http://127.0.0.1:3007/set/uploadSwiper"
+								:show-file-list="false"
+								:on-success="handleSwiperSuccess"
+								:before-upload="beforeAvatarUpload" :data='item'>
+								<template #trigger>
+									<img v-if="imageUrl[index]" :src="imageUrl[index]" class="swiper" />
+									<img src="@/assets/logo.png" alt="" v-else>
+								</template>
+							</el-upload>
+						</div>
+					</div>
+				</el-tab-pane>
                 <el-tab-pane label="其他设置" name="fourth">其他设置</el-tab-pane>
             </el-tabs>
         </div>
     </div>
     <!-- 修改密码弹窗 -->
     <change ref="changeP"></change>
+    <editor ref="editorP"></editor>
 </template>
 
 <script lang="ts" setup>
@@ -102,7 +158,7 @@
         ref,reactive
     }from 'vue'
     import { ElMessage } from 'element-plus'
-    
+
     import { Plus } from '@element-plus/icons-vue'
 
     import type { UploadProps } from 'element-plus'
@@ -110,12 +166,18 @@
     import breadCrumb from '@/components/bread_crumb.vue'
     // 导入useUserInforStore
     import { useUserInforStore } from '@/store/userinfo'
+	// 导入获取、修改公司名称的api
+	import { getCompanyName,changeCompanyName,getAllSwiper } from '@/api/setting'
     // 导入修改姓名,性别,邮箱的api
     import { changeName,changeSex,changeEmail } from '@/api/userinfor'
     // 导入修改密码组件
     import change from './components/change_password.vue'
     // 导入绑定账号
     import { bind, changePassword } from '@/api/userinfor'
+    // 导入editor组件
+    import editor from './components/editor.vue'
+    // 全局总线bus
+    import { bus } from "@/utils/mitt.js"
     // 创建实例
     const userStore = useUserInforStore()
     const changeP  = ref()
@@ -179,7 +241,7 @@
     const saveName = async()=>{
         const res = await changeName(localStorage.getItem('id'),userStore.name)
         console.log(res)
-        if(res.data.status == 0){
+        if(res.status == 0){
                 ElMessage({
                 message: '修改成功！',
                 type: 'success',
@@ -189,34 +251,98 @@
             }
     }
 
-        // 保存性别的点击函数
-        const saveSex = async()=>{
-        const res = await changeSex(localStorage.getItem('id'),userStore.sex)
-        console.log(res)
-        if(res.data.status == 0){
-                ElMessage({
-                message: '修改成功！',
-                type: 'success',
-                })
-            }else{
-                ElMessage.error('修改失败,请重新输入')
-            }
+	// 保存性别的点击函数
+	const saveSex = async()=>{
+	const res = await changeSex(localStorage.getItem('id'),userStore.sex)
+	console.log(res)
+	if(res.status == 0){
+			ElMessage({
+			message: '修改成功！',
+			type: 'success',
+			})
+		}else{
+			ElMessage.error('修改失败,请重新输入')
+		}
     }
 
-        // 保存邮箱的点击函数
-        const saveEmail = async()=>{
-        const res = await changeEmail(localStorage.getItem('id'),userStore.email)
-        console.log(res)
-        if(res.data.status == 0){
-                ElMessage({
-                message: '修改成功！',
-                type: 'success',
-                })
-            }else{
-                ElMessage.error('修改失败,请重新输入')
-            }
+	// 保存邮箱的点击函数
+	const saveEmail = async()=>{
+	const res = await changeEmail(localStorage.getItem('id'),userStore.email)
+	console.log(res)
+	if(res.status == 0){
+			ElMessage({
+			message: '修改成功！',
+			type: 'success',
+			})
+		}else{
+			ElMessage.error('修改失败,请重新输入')
+		}
     }
 
+    // 公司信息
+    // 公司名称
+    const companyName = ref()
+	// 获取公司名字
+	const getCompanyname = async()=>{
+		companyName.value = await getCompanyName()
+	}
+	//调用getCompanyname函数
+	getCompanyname()
+	
+	//修改公司名称
+	const changeCompanyname = async()=>{
+		const res = await changeCompanyName(companyName.value)
+		if(res.status == 0){
+			ElMessage({
+			message: '修改成功！',
+			type: 'success',
+			})
+		}else{
+			ElMessage.error('修改失败,请重新输入!')
+		}
+	}
+	
+	//富文本相关
+    const editorP = ref()
+    // 打开富文本
+    const openEditor = (id:number)=>{
+        //第一个参数用来标记 第二个参数用来传入的值
+        bus.emit('editorTitle',id)
+		// 打开弹窗
+		editorP.value.open();
+    }
+	// 首页管理
+		const swiperData = [{
+			name: 'swiper1'
+		}, {
+			name: 'swiper2'
+		}, {
+			name: 'swiper3'
+		}, {
+			name: 'swiper4'
+		}, {
+			name: 'swiper5'
+		}, {
+			name: 'swiper6'
+		}]
+	
+	//轮播图上传成功
+	const handleSwiperSuccess: UploadProps['onSuccess'] = (
+	    response,
+	) => {
+	    getAllswiper()
+	}
+	
+	// 轮播图
+	const imageUrl = ref([]) 
+	
+	// 获取所有轮播图
+	const getAllswiper = async()=>{
+		imageUrl.value = await getAllSwiper()
+	}
+	// 调用getAllswiper
+	getAllswiper()
+	
 </script>
 
 <style lang="scss" scoped>
@@ -250,6 +376,41 @@
                     
                 }
             }
+			
+			//首页管理外壳
+			.home-wrapped{
+				padding-left: 50px;
+				display: flex;
+				flex-direction: column;
+				// 提示
+				.tips{
+					display: flex;
+					align-items: center;
+					margin-bottom: 8px;
+					
+					span{
+						font-size: 14px;
+						color: #6b778c;
+					}
+				}
+				//轮播图部分
+				.swiper-wrapped{
+					display: flex;
+					margin-bottom: 16px;
+					// 轮播图名字
+					.swiper-name{
+						font-size: 14px;
+						margin-bottom: 24px;
+					}
+					//轮播图
+					.swiper{
+						width: 336px;
+						height: 120px;
+					}
+				}
+			}
+			
+			
             // 保存按钮
             .account-save-button{
                 margin-left: 16px;

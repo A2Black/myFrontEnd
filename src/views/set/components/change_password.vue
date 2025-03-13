@@ -67,7 +67,7 @@
             // 调用changePassword接口
             const res = await changePassword(localStorage.getItem('id'),passwordData.oldPassword,passwordData.newPassword)
             console.log(res);
-            if(res.data.status == 0){
+            if(res.status == 0){
                 ElMessage({
                 message: '密码修改成功！',
                 type: 'success',

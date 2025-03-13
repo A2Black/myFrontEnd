@@ -5,33 +5,19 @@
     <div class="home-wrapped">
         <!-- 轮播图外壳 -->
         <div class="swipper-wrapped">
-            <el-carousel :interval="4000" indicator-position="outside" type="card" height="240px">
-                <el-carousel-item v-for="item in 6" :key="item">
-                <h3 text="2xl" justify="center">{{ item }}</h3>
+            <el-carousel :interval="4000" indicator-position="outside" type="card" height="280px">
+                <el-carousel-item v-for="(item,index) in imageUrl" :key="index">
+                    <img :src="item" class="swiper" />
                 </el-carousel-item>
             </el-carousel>
         </div>
         <!-- 栅格布局外壳 -->
         <div class="layout-wrapped">
             <el-row :gutter="20">
-                <el-col :span="6">
+                <el-col :span="6" v-for="(item,index) in companyIntroduce" :key='index' @click="openIntroduce(index+1)">
                     <div class="company-message-area">
-                        <span>公司介绍</span>
-                    </div>
-                </el-col>
-                <el-col :span="6">
-                    <div class="company-message-area">
-                        <span>公司架构</span>
-                    </div>
-                </el-col>
-                <el-col :span="6">
-                    <div class="company-message-area">
-                        <span>公司战略</span>
-                    </div>
-                </el-col>
-                <el-col :span="6">
-                    <div class="company-message-area">
-                        <span>高层介绍</span>
+                        <span>{{item.set_name}}</span>
+                        <div v-html="item.set_text" class="company-introduce"></div>
                     </div>
                 </el-col>
             </el-row>
@@ -59,12 +45,17 @@
 
         </div>
     </div>
+    <introduce ref="intro"></introduce>
 </template>
 
 <script lang="ts" setup>
     import { ref }from 'vue'
     // 导入封装后的面包屑组件
     import breadCrumb from '@/components/bread_crumb.vue'
+    // 导入apigetAllSwiper
+    import { getAllSwiper,getAllCompanyIntroduce } from '@/api/setting'
+    import { bus } from "@/utils/mitt.js"
+    import introduce from './components/introduce.vue'
     // 面包屑
     const breadcrumb = ref()
     // 面包屑参数
@@ -72,17 +63,49 @@
         first:'首页',
     })
     const tableData = [
-        
     ]
+
+    // 轮播图
+	const imageUrl = ref([]) 
+	
+	// 获取所有轮播图
+	const getAllswiper = async()=>{
+		imageUrl.value = await getAllSwiper()
+	}
+	// 调用getAllswiper
+	getAllswiper()
+
+    // 获取公司介绍
+    const companyIntroduce = ref()
+    const getAllCompanyintroduce = async()=>{
+        const res = await getAllCompanyIntroduce()
+        console.log(res)
+        // 解构赋值
+        const [name,...intro] = res
+        companyIntroduce.value = intro
+    }
+
+    // 调用上述函数
+    getAllCompanyintroduce()
+
+    // 打开公司介绍弹窗
+    const intro  = ref()
+    const openIntroduce = (id:number)=>{
+        bus.emit('introduce',id)
+        intro.value.open()
+    }
+
 </script>
 
 <style lang="scss" scoped>
     // 混合语法
     @mixin table-class {
-        height: 240px;
+        height: 232px;
         width: 48%;
         display: flex;
         flex-direction: column;
+        margin-top: 8px;
+        
         span {
             font-size: 14px;
             margin-bottom: 5px;
@@ -105,6 +128,12 @@
             margin-bottom: 8px;
             border:1px solid #e4e4e7;
             border-radius: calc(.5rem + 4px);
+
+            // 轮播图
+            .swiper{
+                height: 100%;
+                width: 100%;
+            }
         }
         // 栅格布局外壳
         .layout-wrapped{
@@ -126,11 +155,21 @@
                     border-bottom: 1px solid #409eff ;
                     font-size: 14px;
                 }
+
+                .company-introduce{
+                    text-indent: 24px;
+					font-size: 14px;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					-webkit-line-clamp: 3;
+					display: -webkit-box;
+					-webkit-box-orient: vertical;
+                }
             }
         }
         // 表格外壳
         .two-tables-wrapped{
-            height: 300px;
+            height: 232px;
             width: 100%;
             display: flex;
             align-items: center;
@@ -139,6 +178,7 @@
             border:1px solid #e4e4e7;
             border-radius: calc(.5rem + 4px);
             
+
             // 公司公告
             .company-notice{
                 @include table-class()

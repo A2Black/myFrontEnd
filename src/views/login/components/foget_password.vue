@@ -84,13 +84,13 @@ const labelPosition = ref('top')
     // 打开验证邮箱和账号的弹窗
     const verifyAccountAndEmail = async()=>{
         const res = await verify(forgetData)
-        if(res.data.status == 0){
+        if(res.status == 0){
             ElMessage({
                 message: '验证成功！',
                 type: 'success',
             })
             // localStorage是将id存储到浏览器的本地存储空间，sessionStorag是将id存储到浏览器的会话空间
-            localStorage.setItem('id',res.data.id)
+            localStorage.setItem('id', res.id)
             state.forgetPasswordDialog = false
             state.changePasswordDialog = true
         }else{

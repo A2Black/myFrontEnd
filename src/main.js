@@ -29,7 +29,9 @@ app.use(ElementPlus, {
   locale: zhCn,
 })
 
-app.use(router) // 确保路由挂载
-app.mount('#app') // 最终挂载到 #app
-// 注册pinia
-app.use(pinia)
+// app.use(router) // 确保路由挂载
+// app.mount('#app') // 最终挂载到 #app
+// // 注册pinia
+// app.use(pinia)
+
+app.use(router).use(pinia).mount('#app')

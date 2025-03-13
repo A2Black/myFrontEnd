@@ -2,6 +2,20 @@
 // 导入axios
 import instance from "@/http/index.js";
 
+/**
+ * @typedef {Object} LoginResponse
+ * @property {string} message
+ * @property {{ id: string }} results
+ * @property {string} token
+ */
+
+/**
+ * 登录请求函数
+ * @param {{ account: number, password: string }} data
+ * @returns {Promise<LoginResponse>}
+ */
+
+
 // 注册接口
 export const register = data => {
     // 传入两个数据，账号和密码
@@ -22,8 +36,21 @@ export const register = data => {
     })
 }
 
+/**
+ * @typedef {Object} LoginResponse
+ * @property {string} message
+ * @property {{ id: string }} results
+ * @property {string} token
+ */
+
+/**
+ * 登录请求函数
+ * @param {{ account: number, password: string }} data
+ * @returns {Promise<LoginResponse>}
+ */
+
 // 登录接口
-export const login = data => {
+export const login = (data)=> {
     // 传入两个数据，账号和密码
     // 创建解构赋值，从data里面获取账号和密码
     const {
@@ -32,14 +59,13 @@ export const login = data => {
     } = data
     // 调用instanc
     return instance({
-        url:'api/login',
-        method:'POST',
-        // 传入数据
-        data:{
-            account,
-            password
-        }
-    })
+		url: '/api/login',
+		method: 'POST',
+		data: {
+			account,
+			password
+		}
+	})
 }
 
 // 登陆页面验证邮箱和账户接口
