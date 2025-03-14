@@ -18,16 +18,22 @@ const routes = [{
 		name:'menu',
 		path:'/menu',
 		component: () => import('@/views/menu/index.vue'),
+		// menu下子路由
 		children:[{
 			name:'home',
 			path:'/home',
 			component: () => import('@/views/home/index.vue'),
-		},
-		{
+			},
+			{
 			name:'set',
 			path:'/set',
 			component: () => import('@/views/set/index.vue'),
-		}
+			},
+			{
+			name:'overview',
+			path:'/overview',
+			component: () => import('@/views/overview/index.vue'),
+			}
 		]
 	}
 ]

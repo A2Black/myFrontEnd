@@ -322,8 +322,6 @@
 			name: 'swiper4'
 		}, {
 			name: 'swiper5'
-		}, {
-			name: 'swiper6'
 		}]
 	
 	//轮播图上传成功
@@ -338,7 +336,9 @@
 	
 	// 获取所有轮播图
 	const getAllswiper = async()=>{
-		imageUrl.value = await getAllSwiper()
+		const res = await getAllSwiper()
+        //console.log(res)
+        imageUrl.value = res
 	}
 	// 调用getAllswiper
 	getAllswiper()

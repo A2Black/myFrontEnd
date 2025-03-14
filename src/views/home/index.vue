@@ -79,7 +79,7 @@
     const companyIntroduce = ref()
     const getAllCompanyintroduce = async()=>{
         const res = await getAllCompanyIntroduce()
-        console.log(res)
+        // console.log(res)
         // 解构赋值
         const [name,...intro] = res
         companyIntroduce.value = intro
