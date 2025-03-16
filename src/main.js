@@ -15,7 +15,8 @@ import 'element-plus/dist/index.css'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 // 导入svg图标
 import 'virtual:svg-icons-register'
-
+// 引入全局样式
+import '@/assets/css/common.scss'
 
 // 创建实例
 const app = createApp(App)

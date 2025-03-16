@@ -1,0 +1,29 @@
+// 用户管理
+.table-wrapped {
+    padding: 8px;
+    height: calc(100vh - 105px);
+    background-color: #f1f3f6;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .table-top {
+        .table-header {
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 48px;
+            background-color: #fff;
+
+            .el-input__wrapper {
+                height: 32px;
+            }
+        }
+    }
+
+    .table-footer {
+        display: flex;
+        justify-content: center
+    }
+}
