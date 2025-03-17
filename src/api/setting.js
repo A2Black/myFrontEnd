@@ -60,6 +60,10 @@ export const getCompanyIntroduce = (set_name) => {
     })
 }
 
+/**
+ * 获取公司介绍数据
+ * @returns {Promise<string[]>} 
+ */
 // 获取所有公司信息
 export const getAllCompanyIntroduce = () => {
     // 调用instance

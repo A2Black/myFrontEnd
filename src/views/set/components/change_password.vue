@@ -12,13 +12,13 @@
         </el-form>
         <!-- 忘记密码底部内容-->
         <template #footer>
-                <div class="dialog-footer">
-                    <el-button @click="state.changePasswordDialog = false">取消</el-button>
-                    <el-button type="primary" @click="changeUserPassword">
-                    确认
-                    </el-button>
-                </div>
-            </template>
+            <div class="dialog-footer">
+                <el-button @click="state.changePasswordDialog = false">取消</el-button>
+                <el-button type="primary" @click="changeUserPassword">
+                确认
+                </el-button>
+            </div>
+        </template>
     </el-dialog>
 </template>
 

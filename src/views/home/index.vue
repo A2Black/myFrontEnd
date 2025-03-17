@@ -79,7 +79,6 @@
     const companyIntroduce = ref()
     const getAllCompanyintroduce = async()=>{
         const res = await getAllCompanyIntroduce()
-        // console.log(res)
         // 解构赋值
         const [name,...intro] = res
         companyIntroduce.value = intro
@@ -161,7 +160,10 @@
 					font-size: 14px;
 					overflow: hidden;
 					text-overflow: ellipsis;
-					-webkit-line-clamp: 3;
+                    // 限制行数 文本截断   私有属性
+					-webkit-line-clamp: 4;
+                    // 添加标准属性
+                    line-clamp: 4;
 					display: -webkit-box;
 					-webkit-box-orient: vertical;
                 }

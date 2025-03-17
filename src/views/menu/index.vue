@@ -74,20 +74,21 @@
                 <span class="header-left-content">尊敬的{{ userStore.name }}，欢迎你的登录</span>
                 <!-- 头部右侧内容 -->
                  <div class="header-right-content">
-                    <el-icon :size="24"><ChatLineRound /></el-icon>
+                    <SvgIcon icon-name="chat" style="width: 24px;height: 24px;"></SvgIcon>
                     <!-- 头部头像mini版显示 -->
                     <el-avatar class="avatarFrame" :size="32" :src="userStore.imageUrl" />
                     <!-- 下拉菜单 -->
                     <el-dropdown>
                         <span class="el-dropdown-link">
-                            <el-icon :size="24"><Tools /></el-icon>
+                            <!-- SvgIcon图标 -->
+                            <SvgIcon icon-name="tools" style="width: 24px;height: 24px;"></SvgIcon>
                         </span>
                         <template #dropdown>
-                        <el-dropdown-menu>
-                            <el-dropdown-item>账号设置</el-dropdown-item>
-                            <el-dropdown-item>修改密码</el-dropdown-item>
-                            <el-dropdown-item @click="backLogin">退出登录</el-dropdown-item>
-                        </el-dropdown-menu>
+                            <el-dropdown-menu>
+                                <el-dropdown-item>账号设置</el-dropdown-item>
+                                <el-dropdown-item>修改密码</el-dropdown-item>
+                                <el-dropdown-item @click="backLogin">退出登录</el-dropdown-item>
+                            </el-dropdown-menu>
                         </template>
                     </el-dropdown>
                  </div>
@@ -107,6 +108,8 @@
         Menu as IconMenu,
     } from '@element-plus/icons-vue'
     import { reactive, toRefs, ref } from 'vue'
+    // 导入SvgIcon
+    import SvgIcon from '@/components/SvgIcon.vue'
     // 导入路由跳转
     import { useRouter } from 'vue-router'
     // 导入useUserInforStore
