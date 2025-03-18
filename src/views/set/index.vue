@@ -144,7 +144,37 @@
 						</div>
 					</div>
 				</el-tab-pane>
-                <el-tab-pane label="其他设置" name="fourth">其他设置</el-tab-pane>
+                <el-tab-pane label="其他设置" name="fourth">
+                    <div class="other-set">
+                        <div class="department-set">
+                            <span>部门设置:</span>
+                                <div class="flex gap-2">
+                                    <el-tag
+                                    v-for="tag in dynamicTags"
+                                    :key="tag"
+                                    closable
+                                    :disable-transitions="false"
+                                    @close="handleClose(tag)"
+                                    >
+                                    {{ tag }}
+                                    </el-tag>
+                                    <el-input
+                                    v-if="inputVisible"
+                                    ref="InputRef"
+                                    v-model="inputValue"
+                                    class="w-20"
+                                    size="small"
+                                    @keyup.enter="handleInputConfirm"
+                                    @blur="handleInputConfirm"
+                                    />
+                                    <el-button v-else class="button-new-tag" size="small" @click="showInput">
+                                    + New Tag
+                                    </el-button>
+                                </div>
+                        </div>
+
+                    </div>
+                </el-tab-pane>
             </el-tabs>
         </div>
     </div>
@@ -155,25 +185,28 @@
 
 <script lang="ts" setup>
     import {
-        ref,reactive
+        ref, 
+        reactive, 
+        nextTick,
+        toRaw
     }from 'vue'
     import { ElMessage } from 'element-plus'
 
     import { Plus } from '@element-plus/icons-vue'
 
-    import type { UploadProps } from 'element-plus'
+    import type { UploadProps, ElInput } from 'element-plus'
     // 导入封装后的面包屑组件
     import breadCrumb from '@/components/bread_crumb.vue'
     // 导入useUserInforStore
     import { useUserInforStore } from '@/store/userinfo'
 	// 导入获取、修改公司名称的api
-	import { getCompanyName,changeCompanyName,getAllSwiper } from '@/api/setting'
+	import { getCompanyName,changeCompanyName,getAllSwiper,setDepartment,getDepartment } from '@/api/setting'
     // 导入修改姓名,性别,邮箱的api
     import { changeName,changeSex,changeEmail } from '@/api/userinfor'
     // 导入修改密码组件
     import change from './components/change_password.vue'
     // 导入绑定账号
-    import { bind, changePassword } from '@/api/userinfor'
+    import { bind } from '@/api/userinfor'
     // 导入editor组件
     import editor from './components/editor.vue'
     // 全局总线bus
@@ -342,7 +375,61 @@
 	}
 	// 调用getAllswiper
 	getAllswiper()
-	
+
+    // 其他设置
+    // 部门设置
+    import type { InputInstance } from 'element-plus'
+
+    const inputValue = ref('')
+    const dynamicTags = ref(['Tag 1', 'Tag 2', 'Tag 3'])
+    const inputVisible = ref(false)
+    const InputRef = ref<InputInstance>()
+
+    // 获取部门数据
+    const getdepartment = async() => {
+        dynamicTags.value = await getDepartment()
+    }
+    getdepartment()
+
+    // 关闭时执行的回调函数
+    const handleClose = async(tag: string) => {
+        dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
+        // toRaw把响应式数据转换为原生数据
+        const res = await setDepartment(JSON.stringify(toRaw(dynamicTags.value)))
+        if(res.status == 0){
+			ElMessage({
+			message: '删除部门成功！',
+			type: 'success',
+			})
+		}else{
+			ElMessage.error('删除部门失败!')
+		}
+    }
+    // 点击按钮出现输入框
+    const showInput = () => {
+    inputVisible.value = true
+    nextTick(() => {
+        InputRef.value!.input!.focus()
+    })
+    }
+    // 输入数据后的一个函数
+    const handleInputConfirm = async() => {
+        if (inputValue.value) {
+            dynamicTags.value.push(inputValue.value)
+            const res = await setDepartment(JSON.stringify(toRaw(dynamicTags.value)))
+            if(res.status == 0){
+                ElMessage({
+                message: '添加部门成功！',
+                type: 'success',
+                })
+            }else{
+                ElMessage.error('添加部门失败,请重新输入!')
+            }
+        }
+        inputVisible.value = false
+        inputValue.value = ''
+    }
+
 </script>
 
 <style lang="scss" scoped>
@@ -418,6 +505,23 @@
         }
     }
     
+    // 其他设置
+    .other-set {
+        padding-left: 50px;
+        font-size: 14px;
+
+        // 部门设置
+        .department-set {
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+
+            span {
+                margin-right: 24px;
+            }
+        }
+    }
+
     // Tabs标签页样式
     .demo-tabs > .el-tabs__content {
     padding: 32px;
@@ -441,10 +545,7 @@
     :deep(.el-select){
         width: 240px;
     }
-    // :deep(.el-main){
-    //     border-width: 1px;
-    //     border-color: #000;
-    // }
+    
 
 </style>
 

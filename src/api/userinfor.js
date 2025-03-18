@@ -155,6 +155,9 @@ export const changeUserToAdmin = (id,identity) => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */
 // 通过账号对用户进行搜索 
 export const searchUser = account => {
     return instance({
@@ -163,6 +166,18 @@ export const searchUser = account => {
         // 传入数据
         data: {
             account
+        }
+    })
+}
+
+// 通过部门对用户进行搜索
+export const searchUserByDepartment = department => {
+    return instance({
+        url:'user/searchUserByDepartment',
+        method:'POST',
+        // 传入数据
+        data: {
+            department
         }
     })
 }
@@ -208,6 +223,37 @@ export const deleteUser = (id,account) => {
         data: {
             id,
             account
+        }
+    })
+}
+
+/**
+ * @returns {Promise<string[]>} 
+ */
+// 获取对应身份的一个总人数 
+export const getAdminListLength = identity => {
+    return instance({
+        url:'user/getAdminListLength',
+        method:'POST',
+        // 传入数据
+        data: {
+            identity
+        }
+    })
+}
+
+/**
+ * @returns {Promise<string[]>} 
+ */
+// 监听换页并返回数据
+export const returnListData = (pager,identity) => {
+    return instance({
+        url:'user/returnListData',
+        method:'POST',
+        // 传入数据
+        data: {
+            pager,
+            identity
         }
     })
 }

@@ -10,10 +10,11 @@
                 <!-- 搜索框外壳 -->
                 <div class="search-wrapped">
                     <el-input
-                    v-model="input2"
+                    v-model="adminAccount"
                     style="width: 240px"
                     placeholder="输入账号进行搜索"
                     :suffix-icon="Search"
+                    @change="searchAdmin()"
                     />
                 </div>
                 <!-- 按钮外壳 -->
@@ -28,8 +29,10 @@
                     <el-table-column type="index" />
                     <el-table-column prop="account" label="账号" />
                     <el-table-column prop="name" label="姓名" />
+                    <el-table-column prop="sex" label="性别" />
                     <el-table-column prop="department" label="部门" />
                     <el-table-column prop="email" label="邮箱" />
+                    <el-table-column prop="update_time" label="更新时间" />
                     <el-table-column label="操作" width="180">
                         <!-- 添加插槽 -->
                         <template #default="{row}">
@@ -47,10 +50,13 @@
         <div class="table-footer">
             <!-- 分页组件 -->
             <el-pagination
-                :page-size="20"
-                :pager-count="11"
+                :page-size="1"
+                :pager-count="7"
                 layout="prev, pager, next"
-                :total="1000"
+                :total="adminTotal"
+                :page-count="paginationData.pageCount"
+                :current-page="paginationData.currentPage"
+                @current-change="currentChange"
             />
         </div>
    </div>
@@ -60,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref }from 'vue'
+    import { reactive, ref }from 'vue'
     import { Search } from '@element-plus/icons-vue'
     // 导入一般组件
     import createAdmin from '../components/create_admin.vue'
@@ -73,18 +79,60 @@
     // 全局总线bus
     import { bus } from "@/utils/mitt.js"
     // 导入getAdminList的api
-    import { getAdminList } from '@/api/userinfor'
+    import { searchUser, getAdminListLength, returnListData } from '@/api/userinfor'
     // 面包屑
     const breadcrumb = ref()
     // 面包屑参数
     const item = ref({
         first:'产品管理员',
     })
-    const input2 = ref('')
+    // 搜索框的modelValue
+    const adminAccount = ref<number>()
     // 表格内容
-    const tableData = ref([
-        
-    ])
+    const tableData = ref([])
+    // 搜索管理员
+    const searchAdmin = async() => {
+        tableData.value = await searchUser(adminAccount.value)
+        // console.log(tableData.value)
+    }
+
+    // 创建分页数据
+    const paginationData = reactive({
+        // 总页数
+        pageCount:1,
+        // 当前所处页数
+        currentPage:1,
+    })
+
+    // 定义管理员总数变量
+    const adminTotal = ref<number>(0)
+    // 获取管理员的总数
+    const getadminlistLength = async() => {
+        const res = await getAdminListLength("产品管理员")
+        adminTotal.value = res.length
+        // 向上取整
+        paginationData.pageCount = Math.ceil(res.length/1)  //除以每页条目数
+    }
+    getadminlistLength()
+
+    // 默认获取第一页数据
+    const getFirstPageData = async() => {
+        tableData.value = await returnListData(0,'产品管理员')
+    }
+    getFirstPageData()
+
+    // 分页的监听换页事件 current-page 改变时触发
+    const currentChange = async(value: number) => {
+        paginationData.currentPage = value
+        tableData.value = await returnListData(paginationData.currentPage-1,'产品管理员')
+    }
+
+    // 获取管理员列表
+    const getadminlist = () => {
+        getadminlistLength()
+    }
+    getadminlist()
+
     // 创建管理员
     const CreateAdmin = ref()
     // 打开弹窗
@@ -93,12 +141,6 @@
         bus.emit('createId',id)
         CreateAdmin.value.open()
     }
-
-    // 获取管理员列表
-    const getadminlist = async() => {
-        tableData.value = await getAdminList(item.value.first)
-    }
-    getadminlist()
 
     // 编辑管理员
     const EditAdmin = ref()
@@ -116,6 +158,7 @@
         bus.emit('deleteId',id)
         DeleteAdmin.value.open()
     }
+
 </script>
 
 <style lang="scss" scoped>

@@ -136,7 +136,7 @@
     // 获取用户信息
     const getUserinfo = async()=>{
         const res = await getUserInfo(localStorage.getItem('id'))
-        console.log(res)
+        // console.log(res)
     }
     // 调用该函数
     getUserinfo()

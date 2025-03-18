@@ -24,8 +24,7 @@
                 </el-form-item>
                 <el-form-item label="部门" prop="department">
                     <el-select v-model="formData.department" placeholder="请选择部门">
-                        <el-option label="总裁办" value="总裁办" />
-                        <el-option label="项目部" value="项目部" />
+                        <el-option v-for="item in departmentData" :key="item" :label="item" :value="item" />
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -44,6 +43,8 @@
 
 <script setup lang="ts">
     import { reactive, ref, onBeforeUnmount } from 'vue'
+    // 导入获取部门的api
+    import { getDepartment } from '@/api/setting'
     import { createAdmin } from '@/api/userinfor'
     // 导入消息提示
     import { ElMessage } from 'element-plus'
@@ -63,6 +64,13 @@
             title.value = "新建消息管理员"
         }
     })
+
+    const departmentData = ref([])
+    // 获取部门数据
+    const getdepartment = async() => {
+        departmentData.value = await getDepartment()
+    }
+    getdepartment()
 
     // 为formData添加接口
     interface formData {

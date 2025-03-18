@@ -17,6 +17,16 @@
             align-items: center;
             height: 48px;
             background-color: #fff;
+            .left_wrapped {
+                display: flex;
+
+                .search-wrapped {
+                    margin-right: 24px;
+                }
+                .select-wrapped {
+                    width: 240px;
+                }
+            }
 
             .el-input__wrapper {
                 height: 32px;
