@@ -1,6 +1,6 @@
 <template>
     <!-- 添加管理员对话窗 -->
-    <el-dialog v-model="dialogFormVisible" title="编辑管理员信息" width="600px"  align-center draggable>
+    <el-dialog v-model="dialogFormVisible" title="编辑用户信息" width="600px"  align-center draggable>
         <div class="dialog-content">
             <!-- 表单内容 -->
             <el-form ref="ruleFormRef" :model="formData" :rules="rules" label-width="60px">
@@ -86,25 +86,23 @@
         name:'',
         sex:'',
         email:'',
-        department:''
+        department:'',
+        identity:'用户'
     })
 
     //添加表单验证规则
     const rules = reactive({
-        account: [
-            { required: true, message: '请输入需要添加的管理员账号', trigger: 'blur' },
-        ],
         name: [
-            { required: true, message: '请输入管理员姓名', trigger: 'blur' },
+            { required: true, message: '请输入姓名', trigger: 'blur' },
         ],
         sex: [
-            { required: true, message: '请选择管理员性别', trigger: 'blur' },
+            { required: true, message: '请选择性别', trigger: 'blur' },
         ],
         email: [
-            { required: true, message: '请输入管理员邮箱', trigger: 'blur' },
+            { required: true, message: '请输入邮箱', trigger: 'blur' },
         ],
         department: [
-            { required: true, message: '请选择管理员的部门', trigger: 'blur' },
+            { required: true, message: '请选择部门', trigger: 'blur' },
         ],
     })
 
@@ -120,23 +118,21 @@
         open
     })
 
-    // 接受success
-    const emit = defineEmits(['success'])
-
-    // 确认编辑管理员信息
+    // 编辑用户信息
     const confirmEditAdmin = async() => {
         const res = await editAdminInfo(formData)
         if(res.status === 0){
             ElMessage({
-                message: '编辑管理员信息成功！',
+                message: '编辑用户信息成功！',
                 type: 'success',
             })
             // 发送success
-            emit('success')
+            // emit('success')
+            bus.emit('offDialog',2)
             // 关闭弹窗
             dialogFormVisible.value = false
         }else{
-            ElMessage.error('编辑管理员信息失败，请重新创建')
+            ElMessage.error('编辑用户信息失败!')
             // 关闭弹窗
             dialogFormVisible.value = false
         }

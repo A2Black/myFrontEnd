@@ -170,6 +170,9 @@ export const searchUser = account => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */
 // 通过部门对用户进行搜索
 export const searchUserByDepartment = department => {
     return instance({
@@ -206,6 +209,9 @@ export const hotUser = id => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */
 // 获取冻结用户列表
 export const getBanList = () => {
     return instance({

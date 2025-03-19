@@ -1,7 +1,8 @@
 <template>
     <!-- 添加管理员对话窗 -->
     <el-dialog v-model="dialogFormVisible" title="删除操作" width="30%" center draggable>
-        <span>是否取消该用户的管理员职位?删除后该该用户将展现在用户列表中</span>
+        <span v-if="adminid">是否取消该用户的管理员职位?删除后该该用户将展现在用户列表中</span>
+        <span v-else>请慎重操作,删除后此用户将永久失去登陆资格</span>
         <!-- 底部内容-->
         <template #footer>
             <div class="dialog-footer">
@@ -17,7 +18,7 @@
 <script setup lang="ts">
     import { onBeforeUnmount, ref } from 'vue'
     import { 
-        changeAdminToUser
+        changeAdminToUser, deleteUser
     } from '@/api/userinfor'
     // 全局总线bus
     import { bus } from "@/utils/mitt.js"
@@ -34,30 +35,60 @@
         open
     })
 
+    const adminid = ref()
     const userid = ref()
+    const useraccount = ref()
     // bus接受id
     bus.on('deleteId',async(id:number)=>{
-        userid.value = id
+        adminid.value = id
     })
+    // bus接受id
+    bus.on('deleteUserId',async(userInfor:any)=>{
+        userid.value = userInfor.id
+        useraccount.value = userInfor.account
+    })
+
     // 接受success
     const emit = defineEmits(['success'])
     // 对管理员进行降级
     const deleteadmin = async() => {
-        const res = await changeAdminToUser(userid.value)
-        if(res.status === 0){
-            ElMessage({
-                message: '对管理员进行降级成功！',
-                type: 'success',
-            })
-            // 发送success
-            emit('success')
-            // 关闭弹窗
-            dialogFormVisible.value = false
-        }else{
-            ElMessage.error('对管理员进行降级失败！请重新操作')
-            // 关闭弹窗
-            dialogFormVisible.value = false
+        // 管理员降职
+        if(adminid.value){
+            const res = await changeAdminToUser(adminid.value)
+            if(res.status === 0){
+                ElMessage({
+                    message: '对管理员进行降级成功！',
+                    type: 'success',
+                })
+                // 发送success
+                emit('success')
+                // 关闭弹窗
+                dialogFormVisible.value = false
+            }else{
+                ElMessage.error('对管理员进行降级失败！请重新操作')
+                // 关闭弹窗
+                dialogFormVisible.value = false
+            }
         }
+        // 删除用户
+        if(userid.value){
+            const res = await deleteUser(userid.value,useraccount.value)
+            if(res.status === 0){
+                ElMessage({
+                    message: '删除用户成功！',
+                    type: 'success',
+                })
+                // 发送success
+                emit('success')
+                // 关闭弹窗
+                dialogFormVisible.value = false
+            }else{
+                ElMessage.error('删除用户失败！请重新操作')
+                // 关闭弹窗
+                dialogFormVisible.value = false
+            }
+        }
+        
     }
     // 取消监听
     onBeforeUnmount(()=>{

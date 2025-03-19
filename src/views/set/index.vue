@@ -51,8 +51,8 @@
                         <span>性别：</span>
                         <div class="account-infor-content">
                             <el-select v-model="userStore.sex">
-                                <el-option label="男" value="man" />
-                                <el-option label="女" value="woman" />
+                                <el-option label="男" value="男" />
+                                <el-option label="女" value="女" />
                             </el-select>
                         </div>
                         <div class="account-save-button">

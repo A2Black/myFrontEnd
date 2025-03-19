@@ -111,7 +111,7 @@
         const res = await getAdminListLength("用户管理员")
         adminTotal.value = res.length
         // 向上取整
-        paginationData.pageCount = Math.ceil(res.length/1)  //除以每页条目数
+        paginationData.pageCount = Math.ceil(res.length/10)  //除以每页条目数
     }
     getadminlistLength()
 
@@ -129,7 +129,7 @@
 
     // 获取管理员列表
     const getadminlist = () => {
-        getadminlistLength()
+        getFirstPageData()
     }
     getadminlist()
 
