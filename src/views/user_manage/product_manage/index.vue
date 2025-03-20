@@ -60,9 +60,9 @@
             />
         </div>
    </div>
-   <createAdmin ref="CreateAdmin" @success="getadminlist"></createAdmin>
-   <editAdmin ref="EditAdmin" @success="getadminlist"></editAdmin>
-   <deleteAdmin ref="DeleteAdmin" @success="getadminlist"></deleteAdmin>
+   <createAdmin ref="CreateAdmin"></createAdmin>
+   <editAdmin ref="EditAdmin"></editAdmin>
+   <deleteAdmin ref="DeleteAdmin"></deleteAdmin>
 </template>
 
 <script setup lang="ts">
@@ -84,7 +84,8 @@
     const breadcrumb = ref()
     // 面包屑参数
     const item = ref({
-        first:'产品管理员',
+        first:'用户管理',
+        second:'产品管理员'
     })
     // 搜索框的modelValue
     const adminAccount = ref<number>()
@@ -117,21 +118,41 @@
 
     // 默认获取第一页数据
     const getFirstPageData = async() => {
-        tableData.value = await returnListData(0,'产品管理员')
+        tableData.value = await returnListData(1,'产品管理员')
     }
     getFirstPageData()
 
     // 分页的监听换页事件 current-page 改变时触发
     const currentChange = async(value: number) => {
         paginationData.currentPage = value
-        tableData.value = await returnListData(paginationData.currentPage-1,'产品管理员')
+        tableData.value = await returnListData(paginationData.currentPage,'产品管理员')
     }
 
-    // 获取管理员列表
-    const getadminlist = () => {
-        getFirstPageData()
-    }
-    getadminlist()
+    // 处理分页的不同情况
+    bus.on('adminDialogOff',async(id:number)=>{
+        // 当前页数
+        const current = paginationData.currentPage
+        // 创建管理员
+        if(id == 1){
+            getFirstPageData()
+        }
+        // 编辑管理员
+        if(id == 2){
+            tableData.value = await returnListData(paginationData.currentPage,'产品管理员')
+        }
+        // 删除管理员
+        if(id == 3){
+            tableData.value = await returnListData(paginationData.currentPage,'产品管理员')
+            // 如果是第二页第一条数据
+            if(tableData.value.length == 0){
+                // 页面-1
+                paginationData.currentPage = current-1
+                tableData.value = await returnListData(paginationData.currentPage,'产品管理员')
+                getadminlistLength()
+            }
+        }
+    })
+
 
     // 创建管理员
     const CreateAdmin = ref()

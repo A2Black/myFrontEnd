@@ -28,7 +28,7 @@
                 <!-- 按钮外壳 -->
                 <div class="button-wrapped" width="232">
                     <el-button type="primary" plain @click="banUserList" >筛选冻结用户</el-button>
-                    <el-button type="primary" plain @click="getadminlist" >显示全部用户</el-button>
+                    <el-button type="primary" plain @click="getFirstPageData" >显示全部用户</el-button>
                 </div>
             </div>
 
@@ -65,8 +65,8 @@
                         <!-- 添加插槽 -->
                         <template #default="{row}">
                             <div>
-                                <el-button type="primary" round @click="banuser(row.id)">冻结</el-button>
-                                <el-button type="success" round @click="hotuser(row.id)">解冻</el-button>
+                                <el-button type="primary" round @click="banuser(row.id)" :disabled='row.status==1'>冻结</el-button>
+                                <el-button type="success" round @click="hotuser(row.id)" :disabled='row.status==0'>解冻</el-button>
                             </div>
                         </template>
                     </el-table-column>
@@ -94,7 +94,8 @@
 <script setup lang="ts">
     import { 
         ref,
-        reactive
+        reactive,
+        onBeforeUnmount
      }from 'vue'
     import { Search } from '@element-plus/icons-vue'
     // 导入获取部门的api
@@ -113,7 +114,8 @@
     const breadcrumb = ref()
     // 面包屑参数
     const item = ref({
-        first:'用户列表',
+        first:'用户管理',
+        second:'用户列表'
     })
     
     // 搜索框的modelValue
@@ -148,7 +150,7 @@
 
     // 清空选择框
     const clearOperation = () => {
-        getadminlist()
+        getFirstPageData()
     }
 
     // 创建分页数据
@@ -166,27 +168,22 @@
         const res = await getAdminListLength("用户")
         userTotal.value = res.length
         // 向上取整
-        paginationData.pageCount = Math.ceil(res.length/10)  //除以每页条目数
+        paginationData.pageCount = Math.ceil(res.length / 10)  //除以每页条目数
+        console.log(res)
     }
     getadminlistLength()
 
     // 默认获取第一页数据
     const getFirstPageData = async() => {
-        tableData.value = await returnListData(0,'用户')
+        tableData.value = await returnListData(1,'用户')
     }
     getFirstPageData()
 
     // 分页的监听换页事件 current-page 改变时触发
     const currentChange = async(value: number) => {
         paginationData.currentPage = value
-        tableData.value = await returnListData(paginationData.currentPage-1,'用户')
+        tableData.value = await returnListData(paginationData.currentPage,'用户')
     }
-
-    // 获取用户列表
-    const getadminlist = () => {
-        getFirstPageData()
-    }
-    getadminlist()
 
     // 筛选冻结用户
     const banUserList = async() => {
@@ -201,7 +198,7 @@
                 message: '冻结用户成功！',
                 type: 'success',
             })
-            getadminlist()
+            tableData.value = await returnListData(paginationData.currentPage,'用户')
         }else{
             ElMessage.error('冻结用户失败!')
         }
@@ -214,7 +211,7 @@
                 message: '解冻用户成功！',
                 type: 'success',
             })
-            getadminlist()
+            tableData.value = await returnListData(paginationData.currentPage,'用户')
         }else{
             ElMessage.error('解冻用户失败!')
         }
@@ -228,11 +225,24 @@
         bus.emit('userId',row)
         userCard.value.open()
     }
-    // 赋权成功刷新页面
-    bus.on('offDialog',(id:number)=>{
+    // 刷新页面
+    bus.on('offDialog',async(id:number)=>{
+        // 当前页数
+        const current = paginationData.currentPage
         if(id) {
-            getadminlist()
+            tableData.value = await returnListData(paginationData.currentPage,'用户')
+            // 如果是第二页第一条数据
+            if(tableData.value.length == 0){
+                // 页面-1
+                paginationData.currentPage = current-1
+                tableData.value = await returnListData(paginationData.currentPage,'用户')
+                getadminlistLength()
+            }
         }
+    })
+
+    onBeforeUnmount(()=>{
+        bus.all.clear()
     })
 </script>
 

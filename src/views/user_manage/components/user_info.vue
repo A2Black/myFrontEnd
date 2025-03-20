@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-    import { reactive, ref } from 'vue'
+    import { reactive, ref , onBeforeUnmount} from 'vue'
     // 导入一般组件
     import promote from '../components/promote.vue'
     // 导入一般组件
@@ -104,6 +104,10 @@
     // 向外暴露这个api
     defineExpose({
         open
+    })
+
+    onBeforeUnmount(()=>{
+        bus.all.clear()
     })
 
 </script>

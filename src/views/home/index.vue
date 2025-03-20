@@ -62,8 +62,7 @@
     const item = ref({
         first:'首页',
     })
-    const tableData = [
-    ]
+    const tableData = []
 
     // 轮播图
 	const imageUrl = ref([]) 

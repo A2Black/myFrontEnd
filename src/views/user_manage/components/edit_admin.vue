@@ -120,8 +120,6 @@
         open
     })
 
-    // 接受success
-    const emit = defineEmits(['success'])
 
     // 确认编辑管理员信息
     const confirmEditAdmin = async() => {
@@ -131,8 +129,7 @@
                 message: '编辑管理员信息成功！',
                 type: 'success',
             })
-            // 发送success
-            emit('success')
+            bus.emit('adminDialogOff',2)
             // 关闭弹窗
             dialogFormVisible.value = false
         }else{

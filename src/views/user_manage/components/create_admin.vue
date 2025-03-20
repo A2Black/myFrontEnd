@@ -56,12 +56,15 @@
     bus.on('createId',(id:number)=>{
         if(id === 1){
             title.value = "新建产品管理员"
+            formData.identity = '产品管理员'
         }
         if(id === 2){
             title.value = "新建用户管理员"
+            formData.identity = '用户管理员'
         }
         if(id === 3){
             title.value = "新建消息管理员"
+            formData.identity = '消息管理员'
         }
     })
 
@@ -79,7 +82,8 @@
         name:string,
         sex:string,
         email:string,
-        department:string
+        department:string,
+        identity:string
     }
 
     // 为model创建表单数据对象
@@ -90,7 +94,7 @@
         sex:'',
         email:'',
         department:'',
-        identity:'产品管理员'
+        identity:''
     })
 
     //添加表单验证规则
@@ -115,8 +119,6 @@
         ],
     })
 
-    // 接受success
-    const emit = defineEmits(['success'])
     // 创建管理员
     const confirmCreateAdmin = async() => {
         const res = await createAdmin(formData)
@@ -125,8 +127,7 @@
                 message: '创建管理员账号成功！',
                 type: 'success',
             })
-            // 发送success
-            emit('success')
+            bus.emit('adminDialogOff',1)
             // 关闭弹窗
             dialogFormVisible.value = false
         }else{

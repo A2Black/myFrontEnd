@@ -60,8 +60,7 @@
                     message: '对管理员进行降级成功！',
                     type: 'success',
                 })
-                // 发送success
-                emit('success')
+                bus.emit('adminDialogOff',3)
                 // 关闭弹窗
                 dialogFormVisible.value = false
             }else{
@@ -78,8 +77,9 @@
                     message: '删除用户成功！',
                     type: 'success',
                 })
-                // 发送success
-                emit('success')
+                // 特殊情况1：假设用户在第2页的第一条数据 删除之后，页面变为第1页
+                // 特殊情况2：假设用户在第2页，但不是第1条数据 删除之后，页面依然为第2页
+                bus.emit('offDialog',3)
                 // 关闭弹窗
                 dialogFormVisible.value = false
             }else{

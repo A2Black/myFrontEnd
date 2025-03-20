@@ -54,6 +54,11 @@ const routes = [{
 				path:'/users_list',
 				component: () => import('@/views/user_manage/users_list/index.vue'),
 			},
+			{
+				name:'product_list',
+				path:'/product_list',
+				component: () => import('@/views/product/product_list/index.vue'),
+			},
 		]
 	}
 ]
