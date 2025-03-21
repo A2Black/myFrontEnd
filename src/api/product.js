@@ -1,7 +1,7 @@
 // 导入axios
 import instance from "@/http/index.js";
 
-// 创建产品接口
+// 产品入库接口
 export const createProduct = data => {
     // 解构赋值，扩展运算符
     const {
@@ -51,6 +51,10 @@ export const editProduct = data => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */
+// 通过账号对用户进行搜索 
 // 获取产品列表
 export const getProductList = () => {
     // 调用instance
