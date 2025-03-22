@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref } from 'vue'
+    import { ref, onBeforeUnmount } from 'vue'
     import { changeUserToAdmin } from '@/api/userinfor'
     // 导入消息提示
     import { ElMessage } from 'element-plus'
@@ -62,6 +62,11 @@
         open
     })
 
+    // 取消监听
+    onBeforeUnmount(()=>{
+        bus.all.clear()
+    })
+    
 </script>
 
 <style scoped lang="scss">

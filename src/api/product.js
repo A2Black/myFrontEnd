@@ -53,8 +53,7 @@ export const editProduct = data => {
 
 /**
  * @returns {Promise<string[]>} 
- */
-// 通过账号对用户进行搜索 
+ */ 
 // 获取产品列表
 export const getProductList = () => {
     // 调用instance
@@ -82,6 +81,9 @@ export const applyOutProduct = data => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 产品审核列表
 export const applyProductList = () => {
     // 调用instance
@@ -105,22 +107,23 @@ export const withdrawApplyProduct = id => {
 
 // 产品审核
 export const auditProduct = data => {
-    const {
-        id,
-        ...product_apply_time
-    } = data
-    // 调用instance
-    return instance({
-        url:'pro/auditProduct',
-        method:'POST',
-        // 传入数据
-        data: {
-            id,
-            ...product_apply_time
-        }
-    })
+	const {
+		id,
+		...product_apply_time
+	} = data
+	return instance({
+		url: '/pro/auditProduct',
+		method: 'POST',
+		data: {
+			id,
+			...product_apply_time
+		}
+	})
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 通过入库编号对产品进行搜索 
 export const searchProductForId = product_id => {
     // 调用instance
@@ -133,6 +136,9 @@ export const searchProductForId = product_id => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 通过出库申请编号对产品进行搜索 
 export const searchProductForApplyId = product_out_id => {
     // 调用instance
@@ -145,6 +151,9 @@ export const searchProductForApplyId = product_out_id => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 通过出库编号对产品进行搜索
 export const searchProductForOutId = product_out_id => {
     // 调用instance
@@ -175,6 +184,9 @@ export const getApplyProductLength = () => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */
 // 出库产品列表
 export const auditProductList = () => {
     // 调用instance

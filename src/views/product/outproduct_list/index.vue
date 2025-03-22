@@ -13,32 +13,36 @@
                     v-model="productOutId"
                     style="width: 240px"
                     placeholder="输入申请出库编号来搜索"
+                    clearable
                     :suffix-icon="Search"
+                    @change="searchProductOutId()"
+                    @clear="getAuditProductList()"
                     />
                 </div>
             </div>
             <!-- 表格内容 -->
             <div class="table-content">
                 <!-- 表格部分 -->
-                <el-table :data="outTableData" style="width: 90%" border >
+                <el-table :data="outTableData" style="width: 100%" border>
                     <!-- 添加索引 -->
                     <el-table-column type="index" width="50" />
                     <el-table-column prop="product_out_id" label="出库编号" width="200" />
+                    <el-table-column prop="product_name" label="出库物品" width="200" />
                     <el-table-column prop="product_out_number" label="出库数量" width="180" />
                     <el-table-column prop="product_out_price" label="申请出库总价" width="180" />
                     <el-table-column prop="product_out_apply_person" label="出库申请人" width="100" />
                     <el-table-column prop="product_apply_time" label="申请出库时间" width="180" >
                         <template #default="{row}">
-                            <div>{{ row.update_time?.slice(0,10) }}</div>
+                            <div>{{ row.product_apply_time?.slice(0,10) }}</div>
                         </template>
                     </el-table-column>
                     <el-table-column prop="product_out_audit_person" label="审核人" width="150" />
                     <el-table-column prop="product_audit_time" label="审核时间" width="180" >
                         <template #default="{row}">
-                            <div>{{ row.update_time?.slice(0,10) }}</div>
+                            <div>{{ row.product_audit_time?.slice(0,10) }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="audit_memo" label="审核备注" width="200" />
+                    <el-table-column prop="audit_memo" label="审核备注" />
                 </el-table>
             </div>
         </div>
@@ -62,6 +66,8 @@
     import { Search } from '@element-plus/icons-vue'
     // 导入封装后的面包屑组件
     import breadCrumb from '@/components/bread_crumb.vue'
+    // 导入封装后的接口
+    import { searchProductForOutId, auditProductList } from '@/api/product'
     // 面包屑
     const breadcrumb = ref()
     // 面包屑参数
@@ -73,6 +79,17 @@
     const productOutId = ref()
     // 出库列表表格数组对象
     const outTableData = ref([])
+    // 通过出库编号来搜索产品
+    const searchProductOutId = async() => {
+        outTableData.value = await searchProductForOutId(productOutId.value)
+    }
+
+    // 获取出库产品列表
+    const getAuditProductList = async() => {
+        outTableData.value = await auditProductList()
+    }
+    getAuditProductList()
+
 </script>
 
 <style lang="scss" scoped>
@@ -117,5 +134,8 @@
             align-items: center;
             justify-content: center;
 		}
+	}
+    :deep(.el-table .cell) {
+		font-weight: 400;
 	}
 </style>

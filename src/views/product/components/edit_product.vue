@@ -1,12 +1,12 @@
 <!-- 产品申请入库组件 -->
 <template>
     <!-- 添加管理员对话窗 -->
-    <el-dialog v-model="dialogFormVisible" title="添加产品入库" width="600px"  align-center draggable>
+    <el-dialog v-model="dialogFormVisible" title="编辑产品信息" width="600px"  align-center draggable>
         <div class="dialog-content">
             <!-- 表单内容 -->
             <el-form ref="ruleFormRef" :model="formData" :rules="rules" :label-position="labelPosition" label-width="120px">
                 <el-form-item label="入库编号" prop="product_id">
-                    <el-input v-model="formData.product_id" />
+                    <el-input v-model="formData.product_id" disabled />
                 </el-form-item>
                 <el-form-item label="产品名称" prop="product_name">
                     <el-input v-model="formData.product_name" />
@@ -29,8 +29,8 @@
                 <el-form-item label="产品入库单价" prop="product_single_price">
                     <el-input v-model="formData.product_single_price" />
                 </el-form-item>
-                <el-form-item label="入库操作人" prop="product_create_person">
-                    <el-input v-model="formData.product_create_person" />
+                <el-form-item label="入库负责人" prop="product_create_person" >
+                    <el-input v-model="formData.product_create_person" disabled />
                 </el-form-item>
                 <el-form-item label="入库备注" prop="in_memo">
                     <el-input v-model="formData.in_memo" :rows="3" type="textarea" />
@@ -40,7 +40,7 @@
         <!-- 底部内容-->
         <template #footer>
             <div class="dialog-footer">
-                <el-button type="primary" @click="addProduct">
+                <el-button type="primary" @click="editproduct">
                 确认
                 </el-button>
             </div>
@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
     import { reactive, ref, onBeforeUnmount } from 'vue'
-    import { createProduct  } from '@/api/product'
+    import { editProduct  } from '@/api/product'
     // 导入消息提示
     import { ElMessage } from 'element-plus'
     // 全局总线bus
@@ -61,20 +61,17 @@
     // 定义title
     const title = ref()
     // bus接受id
-    // bus.on('createId',(id:number)=>{
-    //     if(id === 1){
-    //         title.value = "新建产品管理员"
-    //         formData.identity = '产品管理员'
-    //     }
-    //     if(id === 2){
-    //         title.value = "新建用户管理员"
-    //         formData.identity = '用户管理员'
-    //     }
-    //     if(id === 3){
-    //         title.value = "新建消息管理员"
-    //         formData.identity = '消息管理员'
-    //     }
-    // })
+    bus.on('editproductId',(row:any)=>{
+        formData.id = row.id
+        formData.product_id = row.product_id
+        formData.product_name = row.product_name
+        formData.product_category = row.product_category
+        formData.product_unit = row.product_unit
+        formData.product_in_warehouse_number = row.product_in_warehouse_number
+        formData.product_single_price = row.product_single_price
+        formData.product_create_person = row.product_create_person
+        formData.in_memo = row.in_memo
+    })
 
     const departmentData = ref([])
     // 获取部门数据
@@ -85,7 +82,8 @@
 
     // 为formData添加接口
     interface formData {
-        product_id:number,
+        id:number,
+        product_id:null,
         product_name:string,
         product_category:string,
         product_unit:string,
@@ -97,6 +95,7 @@
 
     // 为model创建表单数据对象
     const formData : formData = reactive({
+        id:null,
         product_id:null,
         product_name:'',
         product_category:'',
@@ -138,19 +137,20 @@
     const emit = defineEmits(['success'])
 
     // 添加产品 产品入库
-    const addProduct = async() => {
-        const res = await createProduct(formData)
+    const editproduct = async() => {
+        const res = await editProduct(formData)
         if(res.status === 0){
             ElMessage({
-                message: '产品入库成功！',
+                message: '编辑产品信息成功！',
                 type: 'success',
             })
+            // 出发自定义事件
             emit('success')
             // bus.emit('adminDialogOff',1)
             // 关闭弹窗
             dialogFormVisible.value = false
         }else{
-            ElMessage.error('产品入库失败，请重新添加')
+            ElMessage.error('编辑产品信息失败，请重新编辑')
             // 关闭弹窗
             dialogFormVisible.value = false
         }
@@ -168,9 +168,9 @@
     })
 
     // 取消监听
-    // onBeforeUnmount(()=>{
-    //     bus.all.clear()
-    // })
+    onBeforeUnmount(()=>{
+        bus.all.clear()
+    })
 </script>
 
 <style lang="scss" scoped>

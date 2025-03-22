@@ -70,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-    import { reactive, ref }from 'vue'
+    import { reactive, ref, onBeforeUnmount }from 'vue'
     import { Search } from '@element-plus/icons-vue'
     // 导入一般组件
     import createAdmin from '../components/create_admin.vue'
@@ -183,6 +183,11 @@
         bus.emit('deleteId',id)
         DeleteAdmin.value.open()
     }
+
+    // 取消监听
+    onBeforeUnmount(()=>{
+        bus.all.clear()
+    })
 
 </script>
 

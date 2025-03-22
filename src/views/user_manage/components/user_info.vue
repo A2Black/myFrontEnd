@@ -105,7 +105,8 @@
     defineExpose({
         open
     })
-
+    
+    // 取消监听
     onBeforeUnmount(()=>{
         bus.all.clear()
     })
