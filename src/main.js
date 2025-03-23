@@ -1,6 +1,7 @@
 import { 
 	createApp
 } from 'vue'
+// 导入App
 import App from './App.vue'
 // 导入路由
 import router from './router'

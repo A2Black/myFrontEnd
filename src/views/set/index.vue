@@ -168,7 +168,7 @@
                                     @blur="handleInputConfirm"
                                     />
                                     <el-button v-else class="button-new-tag" size="small" @click="showInput">
-                                    + New Tag
+                                    +添加新部门
                                     </el-button>
                                 </div>
                         </div>

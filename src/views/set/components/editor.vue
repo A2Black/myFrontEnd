@@ -32,7 +32,6 @@
 	} from "element-plus"
 	// changeCompanyIntro
 	import { changeCompanyIntroduce, getCompanyIntroduce} from '@/api/setting'
-    import { Script } from 'vm'
 	const title = ref()
 	bus.on("editorTitle", async (id : number) => {
 		if (id == 1) {

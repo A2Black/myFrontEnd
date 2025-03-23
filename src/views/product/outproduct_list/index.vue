@@ -16,7 +16,7 @@
                     clearable
                     :suffix-icon="Search"
                     @change="searchProductOutId()"
-                    @clear="getAuditProductList()"
+                    @clear="getFirstPageData()"
                     />
                 </div>
             </div>
@@ -49,25 +49,27 @@
 
         <!-- 表格底部 -->
         <div class="table-footer">
-            <!-- 分页 -->
+            <!-- 分页组件 -->
             <el-pagination
-            :page-size="20"
-            :pager-count="3"
-            layout="prev, pager, next"
-            :total="100"
-            background
+                :page-size="1"
+                :pager-count="7"
+                layout="prev, pager, next"
+                :total="outProductTotal"
+                :page-count="paginationData.pageCount"
+                :current-page="paginationData.currentPage"
+                @current-change="currentChange"
             />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { ref }from 'vue'
+    import { ref, reactive }from 'vue'
     import { Search } from '@element-plus/icons-vue'
     // 导入封装后的面包屑组件
     import breadCrumb from '@/components/bread_crumb.vue'
     // 导入封装后的接口
-    import { searchProductForOutId, auditProductList } from '@/api/product'
+    import { searchProductForOutId, returnOutProductListData, getOutProductLength } from '@/api/product'
     // 面包屑
     const breadcrumb = ref()
     // 面包屑参数
@@ -84,12 +86,37 @@
         outTableData.value = await searchProductForOutId(productOutId.value)
     }
 
-    // 获取出库产品列表
-    const getAuditProductList = async() => {
-        outTableData.value = await auditProductList()
-    }
-    getAuditProductList()
+    // 创建分页数据
+    const paginationData = reactive({
+        // 总页数
+        pageCount:1,
+        // 当前所处页数
+        currentPage:1,
+    })
 
+    // 出库产品总数
+    const outProductTotal = ref<number>(0)
+    // 获取出库列表产品的总数
+    const getoutProductListLength = async() => {
+        const res = await getOutProductLength()
+        outProductTotal.value = res.length
+        // 向上取整
+        paginationData.pageCount = Math.ceil(res.length/10)  //除以每页条目数
+    }
+    getoutProductListLength()
+
+    // 默认获取第一页数据
+    const getFirstPageData = async() => {
+        outTableData.value = await returnOutProductListData(1)
+    }
+    getFirstPageData()
+
+    // 分页的监听换页事件 current-page 改变时触发
+    const currentChange = async(value: number) => {
+        paginationData.currentPage = value
+        outTableData.value = await returnOutProductListData(paginationData.currentPage)
+    }
+    
 </script>
 
 <style lang="scss" scoped>

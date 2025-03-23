@@ -4,7 +4,7 @@
     <div class="module-common-wrapped">
         <div class="module-common-content">
             <!-- Tabs标签页 -->
-            <el-tabs v-model="activeName" class="demo-tabs" stretch="true">
+            <el-tabs v-model="activeName" class="demo-tabs" stretch="true" @tab-click="handleClick">
               <el-tab-pane label="产品列表" name="first">
                 <div class="pane-content">
                     <div class="pane-top">
@@ -19,7 +19,7 @@
                                 clearable
                                 :suffix-icon="Search"
                                 @change="searchProduct()"
-                                @clear="getProductlist()"
+                                @clear="getProductFirstPageData()"
                                 />
                             </div>
                             <!-- 按钮外壳 -->
@@ -43,9 +43,9 @@
                                 <el-table-column prop="product_status" label="库存状态" width="100">
                                     <!-- 添加插槽 -->
                                     <template #default="{row}">
-                                        <el-tag type="primary" v-if="row.product_in_warehouse_number<100">库存过少</el-tag>
-                                        <el-tag type="primary" v-else-if="row.product_in_warehouse_number>=100 && row.product_in_warehouse_number<300">库存正常</el-tag>
-                                        <el-tag type="primary" v-else="row.product_in_warehouse_number>=300">库存过剩</el-tag>
+                                        <el-tag type="danger" v-if="row.product_in_warehouse_number<100">库存过少</el-tag>
+                                        <el-tag type="success" v-else-if="row.product_in_warehouse_number>=100 && row.product_in_warehouse_number<300">库存正常</el-tag>
+                                        <el-tag type="warning" v-else="row.product_in_warehouse_number>=300">库存过剩</el-tag>
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="product_create_person" label="入库负责人" width="100" />
@@ -64,7 +64,7 @@
                                     <!-- 添加插槽 -->
                                     <template #default="{row}">
                                         <div>
-                                            <el-button type="primary" @click="openApplyOut(row)" :disabled="row.product_out_status == '申请出库'">申请出库</el-button>
+                                            <el-button type="primary" @click="openApplyOut(row)" :disabled="row.product_out_status == '申请出库'||row.product_in_warehouse_number==0">申请出库</el-button>
                                             <el-button type="success" @click="openEdit(row)" :disabled="row.product_out_status == '申请出库'" >修改</el-button>
                                             <el-button type="danger" @click="openDelete(row.id)" :disabled="row.product_out_status == '申请出库'" >删除</el-button>
                                         </div>
@@ -74,13 +74,15 @@
                         </div>
                     </div>
                     <div class="table-footer">
-                        <!-- 分页 -->
+                        <!-- 分页组件 -->
                         <el-pagination
-                            :page-size="20"
-                            :pager-count="3"
+                            :page-size="1"
+                            :pager-count="7"
                             layout="prev, pager, next"
-                            :total="100"
-                            background
+                            :total="productTotal"
+                            :page-count="paginationData.productPageCount"
+                            :current-page="paginationData.productCurrentPage"
+                            @current-change="productCurrentChange"
                         />
                     </div>
                 </div>
@@ -99,7 +101,7 @@
                                 clearable
                                 :suffix-icon="Search"
                                 @change="searchApplyProduct()"
-                                @clear="getApplyProductlist()"
+                                @clear="getApplyProductFirstPageData()"
                                 />
                             </div>
                             <!-- 按钮外壳  保存下来弹性布局用 -->
@@ -144,13 +146,14 @@
                         </div>
                     </div>
                     <div class="table-footer">
-                        <!-- 分页 -->
                         <el-pagination
-                            :page-size="20"
-                            :pager-count="3"
+                            :page-size="1"
+                            :pager-count="7"
                             layout="prev, pager, next"
-                            :total="100"
-                            background
+                            :total="applyProductTotal"
+                            :page-count="paginationData.applyPageCount"
+                            :current-page="paginationData.applyCurrentPage"
+                            @current-change="applyProductCurrentChange"
                         />
                     </div>
                 </div>
@@ -159,18 +162,19 @@
         </div>
     </div>
 
-    <inwareHouse ref="inware" @success="getProductlist"></inwareHouse>
-    <applyOut ref="apply" @success="changeProductlist"></applyOut>
-    <edit ref="editP" @success="getProductlist"></edit>
-    <deletepro ref="deleteP" @success="getProductlist"></deletepro>
-    <audit ref="auditP" @success="getApplyProductlist"></audit>
-    <withdraw ref="withdrawP" @success="changeProductlist"></withdraw>
-    <again ref="againP" @success="changeProductlist"></again>
+    <inwareHouse ref="inware" @success="getProductFirstPageData"></inwareHouse>
+    <applyOut ref="apply" @success="changeTwolist"></applyOut>
+    <edit ref="editP" @success="getProductFirstPageData"></edit>
+    <deletepro ref="deleteP" @success="getProductFirstPageData"></deletepro>
+    <audit ref="auditP" @success="getApplyProductFirstPageData"></audit>
+    <withdraw ref="withdrawP" @success="changeTwolist"></withdraw>
+    <again ref="againP" @success="changeTwolist"></again>
 </template>
 
 <script setup lang="ts">
-    import { ref,onBeforeUnmount }from 'vue'
+    import { ref, reactive, onBeforeUnmount }from 'vue'
     import { Search } from '@element-plus/icons-vue'
+    import type { TabsPaneContext } from 'element-plus'
     // 全局总线bus
     import { bus } from "@/utils/mitt.js"
     // 导入一般组件
@@ -184,7 +188,14 @@
     // 导入封装后的面包屑组件
     import breadCrumb from '@/components/bread_crumb.vue'
     // 导入接口
-    import { getProductList, searchProductForId, searchProductForApplyId, applyProductList } from '@/api/product'
+    import { 
+        searchProductForId,
+        searchProductForApplyId, 
+        getProductLength,
+        getApplyProductLength,
+        returnProductListData,
+        returnApplyProductListData
+        } from '@/api/product'
 
     // 面包屑
     const breadcrumb = ref()
@@ -204,20 +215,15 @@
     // 产品申请出库表格对象数组
     const applytableData = ref([])
 
-    // 获取产品列表
-    const getProductlist = async() => {
-        const res = await getProductList()
-        tableData.value = res
-        // console.log(res);
+    // tab 被选中时触发
+    const handleClick = (tab: TabsPaneContext) => {
+        if(tab.props.label == '产品列表'){
+            getProductFirstPageData()
+        }
+        if (tab.props.label == '审核列表') {
+            getApplyProductFirstPageData()
+        }
     }
-    getProductlist()
-
-    // 获取产品申请出库列表
-    const getApplyProductlist = async() => {
-        const res = await applyProductList()
-        applytableData.value = res
-    }
-    getApplyProductlist()
 
     // 再次申请出库
     const againP = ref()
@@ -228,9 +234,9 @@
     }
 
     // 同时刷新两个表格数据
-    const changeProductlist = () => {
-        getProductlist()
-        getApplyProductlist() 
+    const changeTwolist = () => {
+        getProductFirstPageData()
+        getApplyProductFirstPageData()
     }
 
     // 根据入库编号搜索产品
@@ -291,6 +297,66 @@
         withdrawP.value.open()
     }
 
+    // 产品列表分页
+    // 创建分页数据
+    const paginationData = reactive({
+        // 产品列表总页数
+        productPageCount:1,
+        // 产品列表当前所处页数
+        productCurrentPage:1,
+        // 申请出库列表总页数
+        applyPageCount:1,
+        // 申请出库列表当前所处页数
+        applyCurrentPage:1,
+    })
+
+    // 产品列表产品总数
+    const productTotal = ref<number>(0)
+    // 获取产品列表产品的总数
+    const getProductListLength = async() => {
+        const res = await getProductLength()
+        productTotal.value = res.length
+        // 向上取整
+        paginationData.productPageCount = Math.ceil(res.length/10)  //除以每页条目数
+    }
+    getProductListLength()
+
+    // 默认获取第一页数据
+    const getProductFirstPageData = async() => {
+        tableData.value = await returnProductListData(1)
+    }
+    getProductFirstPageData()
+
+    // 产品列表分页的监听换页事件 current-page 改变时触发
+    const productCurrentChange = async(value: number) => {
+        paginationData.productCurrentPage = value
+        tableData.value = await returnProductListData(paginationData.productCurrentPage)
+    }
+
+    // 申请出库列表分页
+    // 产品列表产品总数
+    const applyProductTotal = ref<number>(0)
+    // 获取产品列表产品的总数
+    const getApplyProductListLength = async() => {
+        const res = await getApplyProductLength()
+        applyProductTotal.value = res.length
+        // 向上取整
+        paginationData.productPageCount = Math.ceil(res.length/10)  //除以每页条目数
+    }
+    getApplyProductListLength()
+
+    // 默认获取第一页数据
+    const getApplyProductFirstPageData = async() => {
+        applytableData.value = await returnApplyProductListData(1)
+    }
+    getApplyProductFirstPageData()
+
+    // 产品列表分页的监听换页事件 current-page 改变时触发
+    const applyProductCurrentChange = async(value: number) => {
+        paginationData.applyCurrentPage = value
+        applytableData.value = await returnApplyProductListData(paginationData.applyCurrentPage)
+    }
+
     // 取消监听
     onBeforeUnmount(()=>{
         bus.all.clear()
@@ -299,55 +365,6 @@
 </script>
 
 <style lang="scss" scoped>
-    // 公共模块外壳
-    .module-common-wrapped {
-        padding: 8px;
-        background-color: #f1f3f6;
-        height: calc(100vh - 105px);
-
-        // 公共模块内容
-        .module-common-content {
-            padding: 0 10px;
-            height: 100%;
-            background-color: #fff;
-            border:1px solid #e4e4e7;
-            border-radius: calc(.5rem + 4px);
-
-            // Tabs分页内容
-            .pane-content {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                height: calc(100vh -  170px);
-                background-color: #fff;
-
-                .pane-top {
-                    // 模块化表格头部样式（搜索框和添加按钮）
-                    .module-common-header {
-                        padding: 0 20px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
-                    }
-                    // 模块化表格样式
-                    .module-common-table {
-                        min-height: 10px;
-                        padding: 10px 10px 20px;
-                        margin-bottom: 8px;
-                        background-color: #fff;
-                    }
-                }
-
-                .table-footer {
-                    padding: 0 20px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-            }
-        }
-    }
-
     :deep(.el-table .cell) {
         font-weight: 400;
     }

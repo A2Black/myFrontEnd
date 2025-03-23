@@ -166,6 +166,9 @@ export const searchProductForOutId = product_out_id => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 获取产品总数
 export const getProductLength = () => {
     // 调用instance
@@ -175,6 +178,9 @@ export const getProductLength = () => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 获取申请出库产品总数
 export const getApplyProductLength = () => {
     // 调用instance
@@ -196,6 +202,9 @@ export const auditProductList = () => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */
 // 获取出库产品总数
 export const getOutProductLength = () => {
     // 调用instance
@@ -205,29 +214,47 @@ export const getOutProductLength = () => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */
 // 监听换页返回数据  产品页面
-export const returnProductListData = () => {
+export const returnProductListData = pager => {
     // 调用instance
     return instance({
         url:'pro/returnProductListData',
         method:'POST',
+        data: {
+            pager
+        }
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */
 // 监听换页返回数据  申请出库页面
-export const returnApplyProductListData = () => {
+export const returnApplyProductListData = pager => {
     // 调用instance
     return instance({
         url:'pro/returnApplyProductListData',
         method:'POST',
+        data: {
+            pager	
+        }
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */
 // 监听换页返回数据  出库页面
-export const returnOutProductListData = () => {
+export const returnOutProductListData = pager => {
     // 调用instance
     return instance({
         url:'pro/returnOutProductListData',
         method:'POST',
+        data: {
+            pager	
+        }
     })
 }

@@ -64,6 +64,16 @@ const routes = [{
 				path:'/outproduct_list',
 				component: () => import('@/views/product/outproduct_list/index.vue'),
 			},
+			{
+				name:'message_list',
+				path:'/message_list',
+				component: () => import('@/views/message/message_list/index.vue'),
+			},
+			{
+				name:'recyle',
+				path:'/recyle',
+				component: () => import('@/views/message/recyle/index.vue'),
+			},
 		]
 	}
 ]
