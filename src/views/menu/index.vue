@@ -50,7 +50,7 @@
                         <el-menu-item index="recyle">回收站</el-menu-item>
                     </el-menu-item-group>
                 </el-sub-menu>
-                <el-menu-item index="6">
+                <el-menu-item index="file">
                     <el-icon><Tickets /></el-icon>
                     <span>合同管理</span>
                 </el-menu-item>

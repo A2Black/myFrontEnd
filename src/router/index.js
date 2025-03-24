@@ -74,6 +74,11 @@ const routes = [{
 				path:'/recyle',
 				component: () => import('@/views/message/recyle/index.vue'),
 			},
+			{
+				name:'file',
+				path:'/file',
+				component: () => import('@/views/file/index.vue'),
+			},
 		]
 	}
 ]

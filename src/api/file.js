@@ -1,9 +1,8 @@
+// 导入axios
+import instance from "@/http/index.js";
+
 // 绑定上传者
-export const bindFileAndUser = data => {
-    const {
-        name,
-        url
-    } = data
+export const bindFileAndUser = (name,url) => {
     return instance({
         url: 'file/bindFileAndUser',
         method: 'POST',
@@ -16,11 +15,7 @@ export const bindFileAndUser = data => {
 }
 
 // 更新下载量
-export const updateDownload = data => {
-    const {
-        download_number,
-		id
-    } = data
+export const updateDownload = (download_number,id) => {
     return instance({
         url: 'file/updateDownload',
         method: 'POST',
@@ -44,6 +39,9 @@ export const downloadFile = id => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 获取文件列表
 export const fileList = id => {
     return instance({
@@ -56,18 +54,20 @@ export const fileList = id => {
     })
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 获取文件列表总数
-export const fileListLength = id => {
-    return instance({
-        url: 'file/fileListLength',
-        method: 'POST',
-        // 传入数据
-        data: {
-		    id
-        }
-    })
+export const fileListLength = () => {
+	return instance({
+		url: '/file/fileListLength',
+		method: 'POST',
+	})
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 监听换页返回数据 文件列表
 export const returnFilesListData = pager => {
     return instance({
@@ -93,11 +93,11 @@ export const searchFile = file_name => {
 }
 
 // 删除文件
-export const deleteFile = data => {
-    const {
-        id,
-        file_name
-    } = data
+export const deleteFile = (id,file_name) => {
+    // const {
+    //     id,
+    //     file_name
+    // } = data
     return instance({
         url: 'file/deleteFile',
         method: 'POST',
