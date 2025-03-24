@@ -128,7 +128,7 @@
   const Login = async()=>{
     const res = await login(loginData)
     if(res.message == "登录成功"){
-      const { id } = res.results
+      const { id, name } = res.results
       const {token} = res
       ElMessage({
           message: '登录成功！',
@@ -136,6 +136,8 @@
       })
       // 将id存放在localStorage
       localStorage.setItem('id', id)
+      // 将name存放在localStorage
+      localStorage.setItem('name', name)
       // 将token存在localStorage
       localStorage.setItem('token', token)
       // 使用store中的获取用户信息方法

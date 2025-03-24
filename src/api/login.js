@@ -36,19 +36,19 @@ export const register = data => {
     })
 }
 
-/**
- * @typedef {Object} LoginResponse
- * @property {string} message
- * @property {{ id: string }} results
- * @property {string} token
- */
+// /**
+//  * @typedef {Object} LoginResponse
+//  * @property {string} message
+//  * @property {{ id: string }} results
+//  * @property {{ name: string }} results
+//  * @property {string} token
+//  */
 
 /**
  * 登录请求函数
  * @param {{ account: number, password: string }} data
  * @returns {Promise<LoginResponse>}
  */
-
 // 登录接口
 export const login = (data)=> {
     // 传入两个数据，账号和密码

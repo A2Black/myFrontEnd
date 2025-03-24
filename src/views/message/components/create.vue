@@ -12,8 +12,8 @@
                         <el-option v-for="item in options" :key="item.value" :label="item.value" :value="item.value" />
 					</el-select>
                 </el-form-item>
-                <el-form-item label="发布人" prop="message_publish_name">
-                    <el-input v-model="formData.message_publish_name" />
+                <el-form-item label="发布人" prop="message_publish_name" >
+                    <el-input v-model="formData.message_publish_name" disabled />
                 </el-form-item>
                 <el-form-item label="接收部门" prop="message_receipt_object" placeholder="请选择接收部门" v-if="title=='发布公告'||title=='编辑公告'">
                     <el-select v-model="formData.message_receipt_object" >
@@ -102,6 +102,9 @@
             title.value = "发布公告"
             valueHtml.value = ''	
             formData.message_title = ''
+			formData.message_publish_department = '',
+			formData.message_receipt_object = '',
+			formData.message_level = ''
         }
         if(id == 2){
             title.value = "发布系统消息"
@@ -294,9 +297,6 @@
 		],
 		message_publish_department: [
 			{ required: true, message: '请选择发布部门', trigger: 'blur' },
-		],
-		message_publish_name: [
-			{ required: true, message: '请输入发布人', trigger: 'blur' },
 		],
 		message_receipt_object: [
 			{ required: true, message: '请选择的接收对象', trigger: 'blur' },
