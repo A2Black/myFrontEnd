@@ -324,6 +324,7 @@
     // 默认获取第一页数据
     const getProductFirstPageData = async() => {
         tableData.value = await returnProductListData(1)
+        getProductListLength()
     }
     getProductFirstPageData()
 
@@ -334,9 +335,9 @@
     }
 
     // 申请出库列表分页
-    // 产品列表产品总数
+    // 申请出库列表产品总数
     const applyProductTotal = ref<number>(0)
-    // 获取产品列表产品的总数
+    // 获取申请出库列表产品的总数
     const getApplyProductListLength = async() => {
         const res = await getApplyProductLength()
         applyProductTotal.value = res.length
@@ -348,10 +349,11 @@
     // 默认获取第一页数据
     const getApplyProductFirstPageData = async() => {
         applytableData.value = await returnApplyProductListData(1)
+        getApplyProductListLength()
     }
     getApplyProductFirstPageData()
 
-    // 产品列表分页的监听换页事件 current-page 改变时触发
+    // 申请出库列表分页的监听换页事件 current-page 改变时触发
     const applyProductCurrentChange = async(value: number) => {
         paginationData.applyCurrentPage = value
         applytableData.value = await returnApplyProductListData(paginationData.applyCurrentPage)

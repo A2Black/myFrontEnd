@@ -54,6 +54,9 @@ export const editMessage = data => {
 	})
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 根据发布部门进行获取消息
 export const searchMessageBydepartment = message_publish_department => {
 	return instance({
@@ -65,6 +68,9 @@ export const searchMessageBydepartment = message_publish_department => {
 	})
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 根据发布等级进行获取消息
 export const searchMessageByLevel = message_level => {
 	return instance({
@@ -117,6 +123,9 @@ export const firstDelete = id => {
 	})
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 获取回收站的列表
 export const recycleList = () => {
 	return instance({
@@ -125,6 +134,9 @@ export const recycleList = () => {
 	})
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 获取回收站消息总数
 export const getRecycleMessageLength = () => {
 	return instance({
@@ -133,6 +145,9 @@ export const getRecycleMessageLength = () => {
 	})
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 回收站监听换页
 export const returnRecycleListData = pager => {
 	return instance({
@@ -166,6 +181,10 @@ export const deleteMessage = id => {
 	})
 }
 
+
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 获取公司公告总数
 export const getCompanyMessageLength = () => {
 	return instance({
@@ -174,6 +193,9 @@ export const getCompanyMessageLength = () => {
 	})
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 获取系统消息总数
 export const getSystemMessageLength = () => {
 	return instance({
@@ -196,6 +218,9 @@ export const returnCompanyListData = pager => {
 	})
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 监听换页返回数据  系统消息列表
 export const returnSystemListData = pager => {
 	return instance({

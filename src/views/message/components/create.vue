@@ -9,10 +9,7 @@
                 </el-form-item>
                 <el-form-item label="发布部门" prop="message_publish_department" v-if="title=='发布公告'||title=='编辑公告'">
                     <el-select v-model="formData.message_publish_department" placeholder="请选择发布部门">
-                        <el-option label="五色眼" value="五色眼" />
-						<el-option label="深空动力研究院" value="深空动力研究院" />
-                        <el-option label="外星生态工程部" value="外星生态工程部" />
-                        <el-option label="星际资源事业部" value="星际资源事业部" />
+                        <el-option v-for="item in options" :key="item.value" :label="item.value" :value="item.value" />
 					</el-select>
                 </el-form-item>
                 <el-form-item label="发布人" prop="message_publish_name">
@@ -20,9 +17,7 @@
                 </el-form-item>
                 <el-form-item label="接收部门" prop="message_receipt_object" placeholder="请选择接收部门" v-if="title=='发布公告'||title=='编辑公告'">
                     <el-select v-model="formData.message_receipt_object" >
-						<el-option label="深空动力研究院" value="深空动力研究院" />
-                        <el-option label="外星生态工程部" value="外星生态工程部" />
-                        <el-option label="星际资源事业部" value="星际资源事业部" />
+						<el-option v-for="item in allOptions" :key="item.value" :label="item.value" :value="item.value" />
 					</el-select>
                 </el-form-item>
                 <el-form-item label="公告等级" prop="message_level" v-if="title=='发布公告'||title=='编辑公告'">
@@ -68,6 +63,8 @@
     import { ElMessage, FormProps } from 'element-plus'
     // 导入接口
     import { publishMessage, editMessage } from '@/api/message.js'
+	// 导入获取部门的api
+    import { getDepartment } from '@/api/setting'
 
     
     // 创建labelPosition
@@ -204,7 +201,31 @@
 			}
 		}
     }
-
+	
+    // 不包括全体成员
+    const options = ref([])
+    // 包括全体成员
+    const allOptions = ref([])
+	// 定义部门
+    const departmentData = ref([])
+    // 获取部门数据
+    const getdepartment = async() => {
+        const res = await getDepartment()
+        const data = []
+        const datas = []
+        for(let i = 0;i<res.length;i++){
+            let obj = {
+                value:res[i]
+            }
+            data.push(obj)
+            datas.push(obj)
+        }
+        options.value = data
+        datas.push({value:"全体成员"})
+        allOptions.value = datas
+    }
+	getdepartment()
+    
     // 编辑器实例，必须用 shallowRef
 	const editorRef = shallowRef()
 	// mode
@@ -287,6 +308,12 @@
 			{ required: true, message: '请输入公告内容', trigger: 'blur' },
 		],
     })
+
+	// 取消监听
+    onBeforeUnmount(() => {
+        bus.all.clear()
+    })
+	
 </script>
 
 <style lang="scss" scoped>

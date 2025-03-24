@@ -11,18 +11,18 @@
                         <div class="module-common-header">
                             <!-- 搜索框外壳 -->
                             <div class="search-wrapped">
-                                <el-select v-model="department" placeholder="请选择部门以筛选公告" style="width: 240px">
+                                <el-select v-model="department" placeholder="请选择发布部门以筛选公告" style="width: 240px" @change="searchListByDepartment">
                                     <el-option v-for="item in departmentData" :key="item" :label="item" :value="item" />
                                 </el-select>
-                                <el-radio-group v-model="radiogroup">
-                                    <el-radio value="Sponsor">一般</el-radio>
-                                    <el-radio value="Venue">重要</el-radio>
-                                    <el-radio value="Venue">紧急</el-radio>
+                                <el-radio-group v-model="radiogroup" @change="getMessageListByLevel">
+                                    <el-radio-button value="一般">一般</el-radio-button>
+                                    <el-radio-button value="重要">重要</el-radio-button>
+                                    <el-radio-button value="紧急">紧急</el-radio-button>
                                 </el-radio-group>
                             </div>
                             <!-- 按钮外壳 -->
                             <div class="button-wrapped">
-                                <el-button type="primary" plain round>全部公告</el-button>
+                                <el-button type="primary" @click="getTwoList" plain round>全部公告</el-button>
                                 <el-button type="primary" @click="createMessage(1)" round>发布公告</el-button>
                             </div>
                         </div>
@@ -64,10 +64,13 @@
                     <div class="table-footer">
                         <!-- 分页组件 -->
                         <el-pagination
-                            :page-size="20"
-                            :pager-count="11"
+                            :page-size="1"
+                            :pager-count="7"
                             layout="prev, pager, next"
-                            :total="1000"
+                            :total="paginationData.companyMessageTotal"
+                            :page-count="paginationData.companyMessagePageCount"
+                            :current-page="paginationData.companyMessageCurrentPage"
+                            @current-change="companyMessageCurrentChange"
                         />
                     </div>
                 </div>
@@ -111,11 +114,15 @@
                         </div>
                     </div>
                     <div class="table-footer">
+                        <!-- 分页组件 -->
                         <el-pagination
-                            :page-size="20"
-                            :pager-count="11"
+                            :page-size="1"
+                            :pager-count="7"
                             layout="prev, pager, next"
-                            :total="1000"
+                            :total="paginationData.systemMessageTotal"
+                            :page-count="paginationData.systemMessagePageCount"
+                            :current-page="paginationData.systemMessageCurrentPage"
+                            @current-change="systemMessageCurrentChange"
                         />
                     </div>
                 </div>
@@ -134,7 +141,14 @@
     import createEdit from '../components/create.vue' 
     import deleteM from '../components/delete.vue'
     // 导入接口
-    import { returnCompanyListData, systemMessageList } from '@/api/message.js'
+    import {  
+        searchMessageBydepartment, 
+        searchMessageByLevel ,
+        getCompanyMessageLength,
+        getSystemMessageLength,
+        returnCompanyListData,
+        returnSystemListData
+    } from '@/api/message.js'
     // 导入获取部门的api
     import { getDepartment } from '@/api/setting'
     // 全局总线bus
@@ -161,7 +175,7 @@
     const companyTableData = ref([])
     const systemTableData = ref([])
 
-    // 定义部门 根据部门进行筛选
+    // 定义部门
     const departmentData = ref([])
     // 返回的部门数据
     const department = ref()
@@ -170,9 +184,18 @@
         departmentData.value = await getDepartment()
     }
     getdepartment()
+
+	// 根据部门进行筛选
+	const searchListByDepartment = async() => {
+        companyTableData.value = await searchMessageBydepartment(department.value)
+    }
+
     // 根据消息等级进行筛选
     const radiogroup = ref()
-
+    const getMessageListByLevel = async() => {
+        companyTableData.value = await searchMessageByLevel(radiogroup.value)
+    }
+    
     // 发布公告/发布系统消息
     const createM = ref()
     const createMessage = (id:number) => {
@@ -196,9 +219,45 @@
     const deletem = ref()
     const fisrtDeleteMessage = (id:number) => {
     	bus.emit('firstdeleteMsgId',id)
-        console.log(id)
     	deletem.value.open()
     }
+
+
+    // 刷新两个列表的第一页数据
+    const getTwoList = () => {
+        department.value = ''
+        radiogroup.value = ''
+        getCompanyFirstPageList()
+        getSystemFirstPageData()
+        getCompanyMessageListLength()
+        getSystemFirstPageData()
+    }
+
+    // 分页组件
+    // 创建分页数据
+    const paginationData = reactive({
+        // 公司公告总数
+        companyMessageTotal:1,
+        // 公司公告列表总页数
+        companyMessagePageCount:1,
+        // 公司公告列表当前所处页数
+        companyMessageCurrentPage:1,
+        // 系统消息总数
+        systemMessageTotal:1,
+        // 系统消息列表总页数
+        systemMessagePageCount:1,
+        // 系统消息列表当前所处页数
+        systemMessageCurrentPage:1,
+    })
+
+    // 获取公司公告的总数
+    const getCompanyMessageListLength = async() => {
+        const res = await getCompanyMessageLength()
+        paginationData.companyMessageTotal = res.length
+        // 向上取整
+        paginationData.companyMessagePageCount = Math.ceil(res.length/10)  //除以每页条目数
+    }
+    getCompanyMessageListLength()
 
     // 默认获取公司公告列表第一页的数据
 	const getCompanyFirstPageList = async () => {
@@ -206,18 +265,40 @@
     }
     getCompanyFirstPageList()
 
-    // 获取系统消息列表
-    const getsystemMessageList = async () => {
-		systemTableData.value = await systemMessageList()
-    }
-    getsystemMessageList()
-
-    // 刷新两个列表的第一页数据
-    const getTwoList = () => {
-        getCompanyFirstPageList()
-        getsystemMessageList()
+    // 公司公告列表列表分页的监听换页事件 current-page 改变时触发
+    const companyMessageCurrentChange = async(value: number) => {
+        paginationData.companyMessageCurrentPage = value
+        companyTableData.value = await returnCompanyListData(paginationData.companyMessageCurrentPage)
     }
 
+    // 系统消息列表分页
+    // 获取系统消息列表的总数
+    const getSystemMessageListLength = async() => {
+        const res = await getSystemMessageLength()
+        paginationData.systemMessageTotal = res.length
+        // 向上取整
+        paginationData.systemMessagePageCount = Math.ceil(res.length/10)  //除以每页条目数
+    }
+    getSystemMessageListLength()
+
+    // 默认获取系统消息列表第一页数据
+    const getSystemFirstPageData = async() => {
+        systemTableData.value = await returnSystemListData(1)
+    }
+    getSystemFirstPageData()
+
+    // 系统消息列表列表分页的监听换页事件 current-page 改变时触发
+    const systemMessageCurrentChange = async(value: number) => {
+        paginationData.systemMessageCurrentPage = value
+        systemTableData.value = await returnSystemListData(paginationData.systemMessageCurrentPage)
+    }
+
+
+
+    // 取消监听
+    onBeforeUnmount(() => {
+        bus.all.clear()
+    })
 
 </script>
 
