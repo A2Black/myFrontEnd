@@ -152,6 +152,7 @@
                                     <el-tag
                                     v-for="tag in dynamicTags"
                                     :key="tag"
+                                    size="large"
                                     closable
                                     :disable-transitions="false"
                                     @close="handleClose(tag)"
@@ -167,12 +168,38 @@
                                     @keyup.enter="handleInputConfirm"
                                     @blur="handleInputConfirm"
                                     />
-                                    <el-button v-else class="button-new-tag" size="small" @click="showInput">
+                                    <el-button v-else class="button-new-tag" @click="showInput">
                                     +添加新部门
                                     </el-button>
                                 </div>
                         </div>
-
+                        <div class="product-set">
+                            <span>产品设置:</span>
+                                <div class="flex gap-2">
+                                    <el-tag
+                                    v-for="tag in dynamicProductTags"
+                                    :key="tag"
+                                    closable
+                                    size="large"
+                                    :disable-transitions="false"
+                                    @close="handleCloseProduct(tag)"
+                                    >
+                                    {{ tag }}
+                                    </el-tag>
+                                    <el-input
+                                    v-if="inputProductVisible"
+                                    ref="InputProductRef"
+                                    v-model="inputPruductValue"
+                                    class="w-20"
+                                    size="small"
+                                    @keyup.enter="handleInputProductConfirm"
+                                    @blur="handleInputProductConfirm"
+                                    />
+                                    <el-button v-else class="button-new-tag" @click="showProductInput">
+                                    +添加新产品类别
+                                    </el-button>
+                                </div>
+                        </div>
                     </div>
                 </el-tab-pane>
             </el-tabs>
@@ -195,12 +222,13 @@
     import { Plus } from '@element-plus/icons-vue'
 
     import type { UploadProps, ElInput } from 'element-plus'
+    import type { InputInstance } from 'element-plus'
     // 导入封装后的面包屑组件
     import breadCrumb from '@/components/bread_crumb.vue'
     // 导入useUserInforStore
     import { useUserInforStore } from '@/store/userinfo'
 	// 导入获取、修改公司名称的api
-	import { getCompanyName,changeCompanyName,getAllSwiper,setDepartment,getDepartment } from '@/api/setting'
+	import { getCompanyName,changeCompanyName,getAllSwiper,setDepartment,getDepartment, setProduct, getProduct } from '@/api/setting'
     // 导入修改姓名,性别,邮箱的api
     import { changeName,changeSex,changeEmail } from '@/api/userinfor'
     // 导入修改密码组件
@@ -376,14 +404,18 @@
 	// 调用getAllswiper
 	getAllswiper()
 
-    // 其他设置
+    // ..............................................其他设置.......................................
     // 部门设置
-    import type { InputInstance } from 'element-plus'
-
     const inputValue = ref('')
-    const dynamicTags = ref(['Tag 1', 'Tag 2', 'Tag 3'])
+    const dynamicTags = ref([])
     const inputVisible = ref(false)
     const InputRef = ref<InputInstance>()
+
+    // 产品设置
+    const inputPruductValue = ref('')
+    const dynamicProductTags = ref([])
+    const inputProductVisible = ref(false)
+    const InputProductRef = ref<InputInstance>()
 
     // 获取部门数据
     const getdepartment = async() => {
@@ -391,7 +423,13 @@
     }
     getdepartment()
 
-    // 关闭时执行的回调函数
+    // 获取产品数据
+    const getProductData = async() => {
+        dynamicProductTags.value = await getProduct()
+    }
+    getProductData()
+
+    // 部门设置的关闭时执行的回调函数
     const handleClose = async(tag: string) => {
         dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
         // toRaw把响应式数据转换为原生数据
@@ -405,14 +443,39 @@
 			ElMessage.error('删除部门失败!')
 		}
     }
-    // 点击按钮出现输入框
-    const showInput = () => {
-    inputVisible.value = true
-    nextTick(() => {
-        InputRef.value!.input!.focus()
-    })
+
+    // 产品设置的关闭时执行的回调函数
+    const handleCloseProduct = async(tag: string) => {
+        dynamicProductTags.value.splice(dynamicProductTags.value.indexOf(tag), 1)
+        // toRaw把响应式数据转换为原生数据
+        const res = await setProduct(JSON.stringify(toRaw(dynamicProductTags.value)))
+        if(res.status == 0){
+			ElMessage({
+			message: '删除产品类别成功！',
+			type: 'success',
+			})
+		}else{
+			ElMessage.error('删除产品类别失败!')
+		}
     }
-    // 输入数据后的一个函数
+
+    // 部门设置点击按钮出现输入框
+    const showInput = () => {
+        inputVisible.value = true
+        nextTick(() => {
+            InputRef.value!.input!.focus()
+        })
+    }
+
+    // 产品类比设置点击按钮出现输入框
+    const showProductInput = () => {
+        inputProductVisible.value = true
+        nextTick(() => {
+            InputProductRef.value!.input!.focus()
+        })
+    }
+
+    // 部门设置输入数据后的一个函数
     const handleInputConfirm = async() => {
         if (inputValue.value) {
             dynamicTags.value.push(inputValue.value)
@@ -428,6 +491,24 @@
         }
         inputVisible.value = false
         inputValue.value = ''
+    }
+
+    //  产品类别设置输入数据后的一个函数
+    const handleInputProductConfirm = async() => {
+        if (inputPruductValue.value) {
+            dynamicProductTags.value.push(inputPruductValue.value)
+            const res = await setProduct(JSON.stringify(toRaw(dynamicProductTags.value)))
+            if(res.status == 0){
+                ElMessage({
+                message: '添加产品类别成功！',
+                type: 'success',
+                })
+            }else{
+                ElMessage.error('添加产品类别失败,请重新输入!')
+            }
+        }
+        inputProductVisible.value = false
+        inputPruductValue.value = ''
     }
 
 </script>
@@ -520,6 +601,15 @@
                 margin-right: 24px;
             }
         }
+
+        // 产品设置
+       .product-set {
+            display: flex;
+            align-items: center;
+            span {
+                margin-right: 24px;
+            }
+       }
     }
 
     // Tabs标签页样式

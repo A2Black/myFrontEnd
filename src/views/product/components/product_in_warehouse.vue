@@ -11,10 +11,9 @@
                 <el-form-item label="产品名称" prop="product_name">
                     <el-input v-model="formData.product_name" />
                 </el-form-item>
-                <el-form-item label="产品类别" prop="product_category">
+                <el-form-item label="产品类别" prop="department">
                     <el-select v-model="formData.product_category" placeholder="请选择产品类别">
-                        <el-option label="食品类" value="食品类" />
-                        <el-option label="服装类" value="服装类" />
+                        <el-option v-for="item in productCategoryData" :key="item" :label="item" :value="item" />
                     </el-select>
                 </el-form-item>
                 <el-form-item label="产品单位" prop="product_unit">
@@ -51,6 +50,7 @@
 <script setup lang="ts">
     import { reactive, ref } from 'vue'
     import { createProduct  } from '@/api/product'
+    import { getProduct } from '@/api/setting'
     import { tracking } from '@/utils/operation.js'
     // 导入消息提示
     import { ElMessage } from 'element-plus'
@@ -82,6 +82,14 @@
         product_create_person:'',
         in_memo:''
     })
+
+    // 创建产品类别数组
+    const productCategoryData = ref([])
+    // 向产品类别数组中添加数据
+    const getProductCategoryData = async() => {
+        productCategoryData.value = await getProduct()
+    }
+    getProductCategoryData()
 
     //添加表单验证规则
     const rules = reactive({
@@ -143,10 +151,6 @@
         open
     })
 
-    // 取消监听
-    // onBeforeUnmount(()=>{
-    //     bus.all.clear()
-    // })
 </script>
 
 <style lang="scss" scoped>

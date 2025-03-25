@@ -11,10 +11,9 @@
                 <el-form-item label="产品名称" prop="product_name">
                     <el-input v-model="formData.product_name" />
                 </el-form-item>
-                <el-form-item label="产品类别" prop="product_category">
+                <el-form-item label="产品类别" prop="department">
                     <el-select v-model="formData.product_category" placeholder="请选择产品类别">
-                        <el-option label="食品类" value="食品类" />
-                        <el-option label="服装类" value="服装类" />
+                        <el-option v-for="item in productCategoryData" :key="item" :label="item" :value="item" />
                     </el-select>
                 </el-form-item>
                 <el-form-item label="产品单位" prop="product_unit">
@@ -51,6 +50,7 @@
 <script setup lang="ts">
     import { reactive, ref, onBeforeUnmount } from 'vue'
     import { editProduct  } from '@/api/product'
+    import { getProduct } from '@/api/setting'
     // 导入消息提示
     import { ElMessage } from 'element-plus'
     // 全局总线bus
@@ -73,12 +73,13 @@
         formData.in_memo = row.in_memo
     })
 
-    const departmentData = ref([])
-    // 获取部门数据
-    // const getdepartment = async() => {
-    //     departmentData.value = await getDepartment()
-    // }
-    // getdepartment()
+    // 创建产品类别数组
+    const productCategoryData = ref([])
+    // 向产品类别数组中添加数据
+    const getProductCategoryData = async() => {
+        productCategoryData.value = await getProduct()
+    }
+    getProductCategoryData()
 
     // 为formData添加接口
     interface formData {

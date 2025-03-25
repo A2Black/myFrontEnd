@@ -96,3 +96,26 @@ export const getDepartment = () => {
         method:'POST',
     })
 }
+
+// 产品类别设置
+export const setProduct = data => {
+    return instance({
+        url:'set/setProduct',
+        method:'POST',
+        data:{
+            set_value:data
+        }
+    })
+}
+
+/**
+ * 获取产品类别数据
+ * @returns {Promise<string[]>} 
+ */
+// 获取产品类别
+export const getProduct = () => {
+    return instance({
+        url:'set/getProduct',
+        method:'POST',
+    })
+}
