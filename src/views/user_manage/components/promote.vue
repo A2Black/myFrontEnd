@@ -19,14 +19,17 @@
 <script setup lang="ts">
     import { ref, onBeforeUnmount } from 'vue'
     import { changeUserToAdmin } from '@/api/userinfor'
+    import { tracking } from '@/utils/operation.js'
     // 导入消息提示
     import { ElMessage } from 'element-plus'
     // 全局总线bus
     import { bus } from "@/utils/mitt.js"
 
     const userid = ref()
-    bus.on('promoteId',(id:number)=>{
-        userid.value = id
+    const username = ref()
+    bus.on('promoteId',(userInfo:any)=>{
+        userid.value = userInfo.id
+        username.value = userInfo.name
     })
 
     const radio = ref()
@@ -39,6 +42,7 @@
                 message: '创建管理员账号成功！',
                 type: 'success',
             })
+            tracking('用户',localStorage.getItem('name'),username.value,'高级',1)
             bus.emit('offDialog',1)
             // 关闭弹窗
             dialogPromoteVisible.value = false

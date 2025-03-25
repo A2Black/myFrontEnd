@@ -2,12 +2,7 @@
 import instance from "@/http/index.js";
 
 // 操作记录
-export const operationLog = data => {
-    const {
-        operation_person,
-        operation_content,
-        operation_level
-    } = data
+export const operationLog = (operation_person,operation_content,operation_level) => {
 	return instance({
 		url: '/olog/operationLog',
 		method: 'POST',
@@ -27,6 +22,9 @@ export const operationLogList = () => {
 	})
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 搜索最近十条操作记录
 export const searchOperationLogList = operation_person => {
 	return instance({
@@ -38,6 +36,9 @@ export const searchOperationLogList = operation_person => {
 	})
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 返回操作日志列表的长度
 export const operationLogListLength = () => {
 	return instance({
@@ -46,6 +47,9 @@ export const operationLogListLength = () => {
     })	
 }
 
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 监听换页返回数据  操作日志列表
 export const returnOperationListData = pager => {
 	return instance({

@@ -54,11 +54,11 @@
                     <el-icon><Tickets /></el-icon>
                     <span>合同管理</span>
                 </el-menu-item>
-                <el-menu-item index="7">
+                <el-menu-item index="operation_log">
                     <el-icon><TakeawayBox /></el-icon>
                     <span>操作日志</span>
                 </el-menu-item>
-                <el-menu-item index="8">
+                <el-menu-item index="login_log">
                     <el-icon><Filter /></el-icon>
                     <span>登录日志</span>
                 </el-menu-item>

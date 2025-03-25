@@ -17,7 +17,7 @@
                         :show-file-list="false"
                         multiple
                     >
-                        <el-button type="primary" size="small">点击上传<el-icon class="el-icon--right"><Upload /></el-icon></el-button>
+                        <el-button type="primary" >点击上传<el-icon class="el-icon--right"><Upload /></el-icon></el-button>
                     </el-upload>
                 </div>
             </div>
@@ -82,7 +82,7 @@
     // 导入接口
     import { bindFileAndUser,fileListLength, returnFilesListData, updateDownload } from '@/api/file'
     // 导入一般组件
-    import tipDel from './tips/tips.vue'
+    import tipDel from './components/tips.vue'
     // 导入封装后的面包屑组件
     import breadCrumb from '@/components/bread_crumb.vue'
     // 面包屑

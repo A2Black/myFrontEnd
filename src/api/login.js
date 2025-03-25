@@ -36,13 +36,6 @@ export const register = data => {
     })
 }
 
-// /**
-//  * @typedef {Object} LoginResponse
-//  * @property {string} message
-//  * @property {{ id: string }} results
-//  * @property {{ name: string }} results
-//  * @property {string} token
-//  */
 
 /**
  * 登录请求函数

@@ -86,12 +86,14 @@
   import { ref, reactive } from 'vue'
   // 导入消息提示
   import { ElMessage } from 'element-plus'
-  // 导入
+  // 导入一般组件
   import forget from "./components/foget_password.vue"
   // 调用注册和登录的接口
   import {
     login,register
   }from'@/api/login'
+  // 导入记录登录记录的接口
+  import { loginLog } from '@/api/login_log'
   //登录用路由跳转
   import { useRouter } from 'vue-router'
   // 导入定义好的storage
@@ -128,12 +130,15 @@
   const Login = async()=>{
     const res = await login(loginData)
     if(res.message == "登录成功"){
-      const { id, name } = res.results
-      const {token} = res
+      const { id, name, account, email } = res.results
+      const { token } = res
       ElMessage({
           message: '登录成功！',
           type: 'success',
       })
+      // 记录用户的登录行为
+      await loginLog(account,name,email)
+      console.log(id, name, account, email)
       // 将id存放在localStorage
       localStorage.setItem('id', id)
       // 将name存放在localStorage

@@ -20,6 +20,7 @@
     import { 
         changeAdminToUser, deleteUser
     } from '@/api/userinfor'
+    import { tracking } from '@/utils/operation.js'
     // 全局总线bus
     import { bus } from "@/utils/mitt.js"
     // 导入消息提示
@@ -36,16 +37,20 @@
     })
 
     const adminid = ref()
+    const adminname = ref()
     const userid = ref()
     const useraccount = ref()
+    const username = ref()
     // bus接受id
-    bus.on('deleteId',async(id:number)=>{
-        adminid.value = id
+    bus.on('deleteId',async(row:any)=>{
+        adminid.value = row.id
+        adminname.value = row.name
     })
     // bus接受id
     bus.on('deleteUserId',async(userInfor:any)=>{
         userid.value = userInfor.id
         useraccount.value = userInfor.account
+        username.value = userInfor.name
     })
 
     // 接受success
@@ -60,6 +65,7 @@
                     message: '对管理员进行降级成功！',
                     type: 'success',
                 })
+                tracking('管理员',localStorage.getItem('name'),adminname.value,'高级',0)
                 bus.emit('adminDialogOff',3)
                 // 关闭弹窗
                 dialogFormVisible.value = false
@@ -77,6 +83,7 @@
                     message: '删除用户成功！',
                     type: 'success',
                 })
+                tracking('用户',localStorage.getItem('name'),username.value,'高级',0)
                 // 特殊情况1：假设用户在第2页的第一条数据 删除之后，页面变为第1页
                 // 特殊情况2：假设用户在第2页，但不是第1条数据 删除之后，页面依然为第2页
                 bus.emit('offDialog',3)

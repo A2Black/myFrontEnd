@@ -65,8 +65,8 @@
                         <!-- 添加插槽 -->
                         <template #default="{row}">
                             <div>
-                                <el-button type="primary" round @click="banuser(row.id)" :disabled='row.status==1'>冻结</el-button>
-                                <el-button type="success" round @click="hotuser(row.id)" :disabled='row.status==0'>解冻</el-button>
+                                <el-button type="primary" round @click="banuser(row)" :disabled='row.status==1'>冻结</el-button>
+                                <el-button type="success" round @click="hotuser(row)" :disabled='row.status==0'>解冻</el-button>
                             </div>
                         </template>
                     </el-table-column>
@@ -100,6 +100,8 @@
     import { Search } from '@element-plus/icons-vue'
     // 导入获取部门的api
     import { getDepartment } from '@/api/setting'
+    // 埋点操作
+    import { tracking } from '@/utils/operation.js'
     // 导入封装后的面包屑组件
     import breadCrumb from '@/components/bread_crumb.vue'
     // 导入消息提示
@@ -191,27 +193,29 @@
     }
     
     // 冻结用户
-    const banuser = async(id:number) => {
-        const res = await banUser(id)
+    const banuser = async(row:any) => {
+        const res = await banUser(row.id)
         if(res.status === 0){
             ElMessage({
                 message: '冻结用户成功！',
                 type: 'success',
             })
             tableData.value = await returnListData(paginationData.currentPage,'用户')
+            tracking('用户登录状态',localStorage.getItem('name'),row.name,'中级',0)
         }else{
             ElMessage.error('冻结用户失败!')
         }
     }
     // 解冻用户
-    const hotuser = async(id:number) => {
-        const res = await hotUser(id)
+    const hotuser = async(row:any) => {
+        const res = await hotUser(row.id)
         if(res.status === 0){
             ElMessage({
                 message: '解冻用户成功！',
                 type: 'success',
             })
             tableData.value = await returnListData(paginationData.currentPage,'用户')
+            tracking('用户登录状态',localStorage.getItem('name'),row.name,'中级',1)
         }else{
             ElMessage.error('解冻用户失败!')
         }

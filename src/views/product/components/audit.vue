@@ -32,6 +32,7 @@
     import { 
         auditProduct
     } from '@/api/product'
+    import { tracking } from '@/utils/operation.js'
     // 导入useUserInforStore
     import { useUserInforStore } from '@/store/userinfo.js'
     // 全局总线bus
@@ -86,7 +87,7 @@
             })
             // 触发事件
             emit('success')
-            // bus.emit('deleteproductId',3)
+            tracking('产品入库',localStorage.getItem('name'),formData.product_name,'一般',0)
             // 关闭弹窗
             dialogFormVisible.value = false
         }else{

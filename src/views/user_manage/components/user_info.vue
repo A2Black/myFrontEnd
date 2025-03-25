@@ -72,7 +72,13 @@
     // 对用户进行赋权
     const pro = ref()
     const openPromote = (id:number) => {
-        bus.emit('promoteId',id)
+        // 创建userinfo对象
+        let userInfo = {
+            id:id,
+            account:userData.account,
+            name:userData.name
+        }
+        bus.emit('promoteId', userInfo)
         pro.value.open()
     }
 
@@ -86,9 +92,11 @@
     // 对用户进行删除
     const deleteuser = ref()
     const openDelete = (id:number) => {
+        // 创建userinfo对象
         let userInfor = {
             id:id,
-            account:userData.account
+            account:userData.account,
+            name:userData.name
         }
         bus.emit('deleteUserId', userInfor)
         deleteuser.value.open()

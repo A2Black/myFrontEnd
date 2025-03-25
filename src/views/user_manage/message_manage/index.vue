@@ -42,7 +42,7 @@
                         <template #default="{row}">
                             <div>
                                 <el-button type="success" @click="openEdit(row.id)" round>编辑</el-button>
-                                <el-button type="danger" @click="openDelete(row.id)" round>删除</el-button>
+                                <el-button type="danger" @click="openDelete(row)" round>删除</el-button>
                             </div>
                         </template>
                     </el-table-column>
@@ -176,9 +176,9 @@
 
     // 降职管理员
     const DeleteAdmin = ref()
-    const openDelete = (id:number) => {
+    const openDelete = (row:any) => {
         //第一个参数用来标记 第二个参数用来传入的值
-        bus.emit('deleteId',id)
+        bus.emit('deleteId',row)
         DeleteAdmin.value.open()
     }
 

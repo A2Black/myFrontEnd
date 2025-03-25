@@ -79,6 +79,16 @@ const routes = [{
 				path:'/file',
 				component: () => import('@/views/file/index.vue'),
 			},
+			{
+				name:'operation_log',
+				path:'/operation_log',
+				component: () => import('@/views/operation_log/index.vue'),
+			},
+			{
+				name:'login_log',
+				path:'/login_log',
+				component: () => import('@/views/login_log/index.vue'),
+			},
 		]
 	}
 ]

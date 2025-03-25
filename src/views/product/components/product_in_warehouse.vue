@@ -49,39 +49,15 @@
 </template>
 
 <script setup lang="ts">
-    import { reactive, ref, onBeforeUnmount } from 'vue'
+    import { reactive, ref } from 'vue'
     import { createProduct  } from '@/api/product'
+    import { tracking } from '@/utils/operation.js'
     // 导入消息提示
     import { ElMessage } from 'element-plus'
-    // 全局总线bus
-    import { bus } from "@/utils/mitt.js"
     // 设置表单item向左对齐
     import type { FormProps } from 'element-plus'
     const labelPosition = ref<FormProps['labelPosition']>('left')
-    // 定义title
-    const title = ref()
-    // bus接受id
-    // bus.on('createId',(id:number)=>{
-    //     if(id === 1){
-    //         title.value = "新建产品管理员"
-    //         formData.identity = '产品管理员'
-    //     }
-    //     if(id === 2){
-    //         title.value = "新建用户管理员"
-    //         formData.identity = '用户管理员'
-    //     }
-    //     if(id === 3){
-    //         title.value = "新建消息管理员"
-    //         formData.identity = '消息管理员'
-    //     }
-    // })
 
-    const departmentData = ref([])
-    // 获取部门数据
-    // const getdepartment = async() => {
-    //     departmentData.value = await getDepartment()
-    // }
-    // getdepartment()
 
     // 为formData添加接口
     interface formData {
@@ -146,7 +122,7 @@
                 type: 'success',
             })
             emit('success')
-            // bus.emit('adminDialogOff',1)
+            tracking('产品入库',localStorage.getItem('name'),formData.product_name,'一般',1)
             // 关闭弹窗
             dialogFormVisible.value = false
         }else{
