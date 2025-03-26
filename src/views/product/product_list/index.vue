@@ -5,7 +5,7 @@
         <div class="module-common-content">
             <!-- Tabs标签页 -->
             <el-tabs v-model="activeName" class="demo-tabs" stretch="true" @tab-click="handleClick">
-              <el-tab-pane label="产品列表" name="first">
+              <el-tab-pane label="产品列表" name="first" >
                 <div class="pane-content">
                     <div class="pane-top">
                         <div class="module-common-header">
@@ -30,7 +30,7 @@
                         <!-- 模块化共用表格 -->
                         <div class="module-common-table">
                             <!-- 表格部分 -->
-                            <el-table :data="tableData" style="width: 100%" border >
+                            <el-table :data="tableData" style="width: 100%" border max-height="650">
                                 <!-- 添加索引 -->
                                 <el-table-column type="index" width="50" />
                                 <el-table-column prop="product_id" label="入库编号" width="200" />
@@ -110,7 +110,7 @@
                         <!-- 模块化共用表格 -->
                         <div class="module-common-table">
                             <!-- 表格部分 -->
-                            <el-table :data="applytableData" style="width: 100%" border >
+                            <el-table :data="applytableData" style="width: 100%" border max-height="650">
                                 <!-- 添加索引 -->
                                 <el-table-column type="index" width="50" />
                                 <el-table-column prop="product_out_id" label="申请出库编号" width="200" />
@@ -367,7 +367,30 @@
 </script>
 
 <style lang="scss" scoped>
+
     :deep(.el-table .cell) {
         font-weight: 400;
     }
+
+    .pane-content {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 180px);  /* 减去其他元素的高度 */
+    }
+
+    .pane-top {
+        flex: 1;
+        overflow: hidden;
+        margin-bottom: 16px;
+    }
+
+    .table-footer {
+        height: 40px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        background-color: #fff;
+        padding: 0 20px;
+    }
+
 </style>

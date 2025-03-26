@@ -128,6 +128,7 @@
                 type: 'success',
             })
             bus.emit('adminDialogOff',1)
+            resetForm()
             // 关闭弹窗
             dialogFormVisible.value = false
         }else{
@@ -135,6 +136,16 @@
             // 关闭弹窗
             dialogFormVisible.value = false
         }
+    }
+
+    // 清空表单
+    const resetForm = () => {
+        formData.account = null
+        formData.password = ''
+        formData.name = '' 
+        formData.sex = ''
+        formData.email = ''
+        formData.department = ''
     }
 
     const dialogFormVisible = ref(false)

@@ -4,7 +4,7 @@
         <breadCrumb ref="breadcrumb" :item="item"></breadCrumb>
         <!-- 内容 -->
         <div class="common-content">
-            <el-tabs v-model="activeName" class="demo-tabs">
+            <el-tabs v-model="activeName" class="demo-tabs" stretch="true">
                 <el-tab-pane label="账号详情" name="first">
                     <!-- 用户头像信息盒子 -->
                     <div class="account-infor-wrapped">

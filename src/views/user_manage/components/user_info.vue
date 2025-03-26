@@ -12,8 +12,8 @@
                 <div>部门: {{ userData.department }}</div>
                 <div>邮箱: {{ userData.email }}</div>
                 <div>状态：
-                    <span v-if="userData.status===0">正常</span>
-                    <span v-else>冻结</span>
+                    <span v-if="userData.status==0">正常</span>
+                    <span v-if="userData.status==1">冻结</span>
                 </div>
             </el-main>
         </el-container>

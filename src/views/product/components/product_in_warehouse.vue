@@ -131,6 +131,8 @@
             })
             emit('success')
             tracking('产品入库',localStorage.getItem('name'),formData.product_name,'一般',1)
+            // 清空表单
+            resetForm()
             // 关闭弹窗
             dialogFormVisible.value = false
         }else{
@@ -138,6 +140,18 @@
             // 关闭弹窗
             dialogFormVisible.value = false
         }
+    }
+
+    // 清空表单
+    const resetForm = () => {
+        formData.product_id = null
+        formData.product_name = ''
+        formData.product_category = ''
+        formData.product_unit = ''
+        formData.product_in_warehouse_number = null
+        formData.product_single_price = null
+        formData.product_create_person = ''
+        formData.in_memo = ''
     }
 
     const dialogFormVisible = ref(false)

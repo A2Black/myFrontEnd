@@ -11,7 +11,7 @@
                 <div class="person-avatar-wrapped">
                     <!-- 用户头像 -->
                     <el-avatar :size="100" :src="userStore.imageUrl" class="avatar-frame"/>
-                    <span class="department">所属部门：总裁会议室</span>
+                    <span class="department">所属部门：{{ userStore.department }}</span>
                     <div class="company">所属公司：量子之海科技公司</div>
                 </div>
                 <!-- 分割线外壳 -->
@@ -20,11 +20,11 @@
                 </div>
                 <!-- 用户详细信息外壳 -->
                 <div class="detail-info-wrapped">
-                    <p>姓名：{{ userData.name }}</p>
-                    <p>性别：{{ userData.sex }}</p>
-                    <p>身份：{{ userData.identity }}</p>
-                    <p>分管领域：</p>
-                    <p>权限：</p>
+                    <p>姓名：{{ userStore.name }}</p>
+                    <p>性别：{{ userStore.sex }}</p>
+                    <p>身份：{{ userStore.identity }}</p>
+                    <p>分管领域：{{ userStore.department }}</p>
+                    <p>邮箱：{{ userStore.email }}</p>
                 </div>
             </div>
             <!-- 右边部分-用户管理饼状图部分 -->
@@ -40,7 +40,7 @@
                 <div class="title">常用管理</div>
                 <el-row :gutter="20">
                     <el-col :span="6">
-                        <div class="button-area">
+                        <div class="button-area" @click="routerTo('users_manage')">
                             <!-- SvgIcon图标 -->
                             <SvgIcon icon-name="user" style="width: 24px;height: 24px;"></SvgIcon>
                             <!-- 按钮名 -->
@@ -48,27 +48,27 @@
                         </div>
                     </el-col>
                     <el-col :span="6">
-                        <div class="button-area">
+                        <div class="button-area" @click="routerTo('product_manage')">
                             <!-- SvgIcon图标 -->
                             <SvgIcon icon-name="product" style="width: 24px;height: 24px;"></SvgIcon>
                             <!-- 按钮名 -->
-                            <div class="button-name">产品管理</div>
+                            <div class="button-name" >产品管理</div>
                         </div>
                     </el-col>
                     <el-col :span="6">
-                        <div class="button-area">
+                        <div class="button-area" @click="routerTo('message_list')">
                             <!-- SvgIcon图标 -->
                             <SvgIcon icon-name="notice" style="width: 24px;height: 24px;"></SvgIcon>
                             <!-- 按钮名 -->
-                            <div class="button-name">系统消息</div>
+                            <div class="button-name" >系统消息</div>
                         </div>
                     </el-col>
                     <el-col :span="6">
-                        <div class="button-area">
+                        <div class="button-area" @click="routerTo('set')">
                             <!-- SvgIcon图标 -->
                             <SvgIcon icon-name="me" style="width: 24px;height: 24px;"></SvgIcon>
                             <!-- 按钮名 -->
-                            <div class="button-name">个人信息</div>
+                            <div class="button-name" >个人信息</div>
                         </div>
                     </el-col>
                     <el-col :span="6">
@@ -80,11 +80,11 @@
                         </div>
                     </el-col>
                     <el-col :span="6">
-                        <div class="button-area">
+                        <div class="button-area" @click="routerTo('set')">
                             <!-- SvgIcon图标 -->
                             <SvgIcon icon-name="setting" style="width: 24px;height: 24px;"></SvgIcon>
                             <!-- 按钮名 -->
-                            <div class="button-name">系统设置</div>
+                            <div class="button-name" >系统设置</div>
                         </div>
                     </el-col>
                 </el-row>
@@ -107,16 +107,22 @@
     }from 'vue'
     // 导入封装后的面包屑组件
     import breadCrumb from '@/components/bread_crumb.vue'
+    // 导入路由钩子函数
+    import { useRouter } from 'vue-router'
     // 引入echarts
     import * as echarts from 'echarts';
     // 导入useUserInforStore
     import { useUserInforStore } from '@/store/userinfo'
     // 导入SvgIcon
     import SvgIcon from '@/components/SvgIcon.vue'
-    // 导入getUserInfo
-    import { 
-        getUserInfo
-    } from '@/api/userinfor'
+    // 导入api
+    import {
+        getCategoryAndNumber,
+        getAdminAndNumber,
+        getLevelAndNumber,
+        getDayAndNumber
+    } from '@/api/overview'
+    
     // 调用echarts图
 	onMounted(() => {
 		manageUser()
@@ -133,33 +139,29 @@
         first:'系统概览',
     })
 
-    // 获取用户信息
-    const getUserinfo = async()=>{
-        const res = await getUserInfo(localStorage.getItem('id'))
-        // console.log(res)
+    // 创建路由实例
+    const router = useRouter()
+    // 路由跳转函数
+    const routerTo = (where:string) => {
+        // 第一种跳转方法 使用name跳转
+        router.push({
+            name: where
+        })
+        // 第二种跳转方法 使用模板字符串
+        // router.push(`\/${where}`)
     }
-    // 调用该函数
-    getUserinfo()
-
-    // 定义表单类型
-    interface userData {
-        name:string,
-        sex:string,
-        identity:string,
-        department:string,
-    }
-    const userData : userData = reactive({
-        name:'',
-        sex:'',
-        identity:'',
-        department:'',
-    })
 
     // echarts图使用到的各类函数
     // 管理员与用户比值图
-	const manageUser = () => {
+	const manageUser = async() => {
 	// 通过类名 初始化
 		const mu = echarts.init(document.querySelector('.manage-user-pie'))
+        // 加载动画
+        mu.showLoading()
+        let data = await getAdminAndNumber()
+        // console.log(data)
+		// 加载完成后隐藏
+		mu.hideLoading()
 		document.querySelector('.manage-user-pie').setAttribute('_echarts_instance_', '')
 		// 设置基本的参数
 			mu.setOption({
@@ -176,20 +178,15 @@
                 },
                 legend: {
                     orient: 'vertical',
-                    left: 'left'
+                    left: 'left',
+					padding: [20, 20, 20, 20]
                 },
                 series: [
                     {
                     name: 'Access From',
                     type: 'pie',
                     radius: '50%',
-                    data: [
-                        { value: 1048, name: 'Search Engine' },
-                        { value: 735, name: 'Direct' },
-                        { value: 580, name: 'Email' },
-                        { value: 484, name: 'Union Ads' },
-                        { value: 300, name: 'Video Ads' }
-                    ],
+                    data: data.data,
                     emphasis: {
                         itemStyle: {
                         shadowBlur: 10,
@@ -207,8 +204,13 @@
 	}
 
     // 产品类别图
-	const productCategoryBar = async () => {
+	const productCategoryBar = async() => {
 		const pcb = echarts.init(document.querySelector('.product-category-bar'))
+        // 加载动画
+        pcb.showLoading()
+        let data = await getCategoryAndNumber()
+		// 加载完成后隐藏
+		pcb.hideLoading()
 		document.querySelector('.product-category-bar').setAttribute('_echarts_instance_', '')
 			pcb.setOption({
 				title: {
@@ -225,14 +227,14 @@
 				xAxis: {
 					type: 'category',
 					// 食品类，服装类，鞋帽类，日用品类，家具类，家用电器类，纺织品类，五金类
-					data: ['食品类', '服装类', '鞋帽类', '日用品类', '家具类', '家用电器类', '纺织品类','五金类']
+					data: data.category
 				},
 				yAxis: {
 					type: 'value'
 				},
 				series: [
 					{
-						data:[120, 200, 150, 80, 70, 110, 130,115],
+						data:data.price,
 						type: 'bar',
 						barWidth: 40,
 						colorBy: "data"
@@ -245,8 +247,13 @@
 	}
 
     // 公告等级分布图
-	const messageLevel = () => {
+	const messageLevel = async() => {
 		const ml = echarts.init(document.querySelector('.message-level'))
+        // 加载动画
+        ml.showLoading()
+        let data = await getLevelAndNumber()
+		// 加载完成后隐藏
+		ml.hideLoading()
 		document.querySelector('.message-level').setAttribute('_echarts_instance_', '')
 			ml.setOption({
                 title: {
@@ -288,13 +295,7 @@
                         labelLine: {
                             show: false
                         },
-						data: [
-                            { value: 1048, name: 'Search Engine' },
-                            { value: 735, name: 'Direct' },
-                            { value: 580, name: 'Email' },
-                            { value: 484, name: 'Union Ads' },
-                            { value: 300, name: 'Video Ads' }
-                        ]
+						data: data.data
 					}
 				]
 			})
@@ -304,29 +305,17 @@
 	}
 
     // 每日登录用户总量折线图
-    const userloginAllDay = ()=>{
-        // 底部日期的实现
-		// let dd = new Date()
-		// let week = []
-		// for (let i = 1; i < 8; i++) {
-		// 	dd.setDate(dd.getDate() - 1)
-		// 	// 得到日期并且把斜杠替换成横杠
-		// 	week.push(dd.toLocaleDateString().replace(/\//g, "-"))
-		// }
-
-		// let number = []
-		// week.forEach(async (e) => {
-		// 	// 如果在Moment中不加'YYYY-MM-DD'会提示警告
-		// 	let day = moment(e, 'YYYY-MM-DD').format('YYYY-MM-DD')
-		// 	// 调用每天登录人数的接口
-		// 	const res = await everydaynumberofpeople(day)
-		// 	number.push(res.number)
-		// })
-
+    const userloginAllDay = async()=>{
         // 初始化echarts实例
-        const mu = echarts.init(document.querySelector('.userlogin-all-day'))
+        const uld = echarts.init(document.querySelector('.userlogin-all-day'))
+        // 加载动画
+        uld.showLoading()
+        let data = await getDayAndNumber()
+        console.log(data)
+		// 加载完成后隐藏
+		uld.hideLoading()
 		document.querySelector('.userlogin-all-day').setAttribute('_echarts_instance_', '')
-        mu.setOption({
+        uld.setOption({
             title:{
                 text:"每日登录人数",
                 top: "3%",
@@ -337,14 +326,14 @@
             },
             xAxis: {
                 type: 'category',
-                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                data: data.week
             },
             yAxis: {
                 type: 'value'
             },
             series: [
                 {
-                data: [150, 230, 224, 218, 135, 147, 260],
+                data: data.number,
                 type: 'line'
                 }
             ]
@@ -433,6 +422,7 @@
 				background: #fff;
                 border:1px solid #e4e4e7;
                 border-radius: calc(.5rem + 4px);
+                overflow: hidden;
 			}
 		}
 

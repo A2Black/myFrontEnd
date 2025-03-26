@@ -130,7 +130,7 @@
   const Login = async()=>{
     const res = await login(loginData)
     if(res.message == "登录成功"){
-      const { id, name, account, email } = res.results
+      const { id, name, account, email, department } = res.results
       const { token } = res
       ElMessage({
           message: '登录成功！',
@@ -138,11 +138,13 @@
       })
       // 记录用户的登录行为
       await loginLog(account,name,email)
-      console.log(id, name, account, email)
+      // console.log(id, name, account, email)
       // 将id存放在localStorage
       localStorage.setItem('id', id)
       // 将name存放在localStorage
       localStorage.setItem('name', name)
+      // 将department存放在localStorage
+      localStorage.setItem('department', department)
       // 将token存在localStorage
       localStorage.setItem('token', token)
       // 使用store中的获取用户信息方法

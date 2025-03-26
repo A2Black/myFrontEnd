@@ -74,7 +74,10 @@
                 <span class="header-left-content">尊敬的{{ userStore.name }}，欢迎你的登录</span>
                 <!-- 头部右侧内容 -->
                  <div class="header-right-content">
-                    <SvgIcon icon-name="chat" style="width: 24px;height: 24px;"></SvgIcon>
+                    <!-- 部门消息通知提示 -->
+                    <el-badge :is-dot="noread" class="item" @click="openDepartmentMessage" style="cursor:pointer">
+                        <SvgIcon icon-name="chat" style="width: 24px;height: 24px;"></SvgIcon>
+                    </el-badge>
                     <!-- 头部头像mini版显示 -->
                     <el-avatar class="avatarFrame" :size="32" :src="userStore.imageUrl" />
                     <!-- 下拉菜单 -->
@@ -100,14 +103,15 @@
         </el-container>
         </el-container>
     </div>
+    <dmdialog ref="opendm"></dmdialog>
 </template>
 
 <script lang="ts" setup>
-    // 导入elementplus图标
-    import {
-        Menu as IconMenu,
-    } from '@element-plus/icons-vue'
-    import { reactive, toRefs, ref } from 'vue'
+    import { ref } from 'vue'
+    // 导入api
+    import { getReadListAndStatus } from '@/api/department_msg'
+    // 导入一般组件
+    import dmdialog from '@/components/department_msg.vue'
     // 导入SvgIcon
     import SvgIcon from '@/components/SvgIcon.vue'
     // 导入路由跳转
@@ -118,12 +122,30 @@
     const userStore = useUserInforStore()
 
 
+    // 未读消息
+    const noread = ref(false)
+    const getNoread = async ()=>{
+        const res = await getReadListAndStatus(localStorage.getItem('id'))
+        // console.log(res)
+        if(res[0].read_list > 0){
+            noread.value = true
+        }
+        // console.log(noread.value)
+    }
+    getNoread()
+
     // 创建实例
     const router = useRouter()
     // 退出登录
     const backLogin = ()=>{
         // 路由跳转到首页
         router.replace('/login')
+    }
+
+    // 打开部门消息通知
+    const opendm = ref()
+    const openDepartmentMessage = () =>{
+        opendm.value.open()
     }
 
 </script>
