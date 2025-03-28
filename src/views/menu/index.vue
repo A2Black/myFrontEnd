@@ -75,7 +75,7 @@
                 <!-- 头部右侧内容 -->
                  <div class="header-right-content">
                     <!-- 部门消息通知提示 -->
-                    <el-badge :is-dot="noread" class="item" @click="openDepartmentMessage" style="cursor:pointer">
+                    <el-badge :is-dot="messageStore.read_list.length > 0 ? true : false" class="item" @click="openDepartmentMessage" style="cursor:pointer">
                         <SvgIcon icon-name="chat" style="width: 24px;height: 24px;"></SvgIcon>
                     </el-badge>
                     <!-- 头部头像mini版显示 -->
@@ -103,13 +103,12 @@
         </el-container>
         </el-container>
     </div>
+    <!-- departMessageDialog -->
     <dmdialog ref="opendm"></dmdialog>
 </template>
 
 <script lang="ts" setup>
     import { ref } from 'vue'
-    // 导入api
-    import { getReadListAndStatus } from '@/api/department_msg'
     // 导入一般组件
     import dmdialog from '@/components/department_msg.vue'
     // 导入SvgIcon
@@ -118,21 +117,11 @@
     import { useRouter } from 'vue-router'
     // 导入useUserInforStore
     import { useUserInforStore } from '@/store/userinfo'
+    // 导入useMessageStore
+    import { useMessageStore } from '@/store/message'
     // 创建实例
     const userStore = useUserInforStore()
-
-
-    // 未读消息
-    const noread = ref(false)
-    const getNoread = async ()=>{
-        const res = await getReadListAndStatus(localStorage.getItem('id'))
-        // console.log(res)
-        if(res[0].read_list > 0){
-            noread.value = true
-        }
-        // console.log(noread.value)
-    }
-    getNoread()
+    const messageStore = useMessageStore()
 
     // 创建实例
     const router = useRouter()

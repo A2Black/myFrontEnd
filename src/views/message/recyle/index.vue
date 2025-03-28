@@ -24,7 +24,7 @@
                         <!-- 添加插槽 -->
                         <template #default="{row}">
                             <div>
-                                <el-button type="success" @click="reMessage(row.id)" >还原</el-button>
+                                <el-button type="success" @click="reMessage(row)" >还原</el-button>
                                 <el-button type="danger" @click="realDelete(row.id)" >删除</el-button>
                             </div>
                         </template>
@@ -75,8 +75,8 @@
     // 还原和删除组件
     const rad = ref()
     // 打开还原操作弹窗
-    const reMessage = (id:number) => {
-       bus.emit('reMessageId',id)
+    const reMessage = (row:any) => {
+       bus.emit('reMessageId',row)
        rad.value.open()
     }
 
@@ -129,7 +129,7 @@
 <style scoped lang="scss">
     .table-wrapped {
 		padding: 8px;
-		height: calc(100vh - 101px);
+		height: calc(100vh - 105px);
 		background: #f5f5f5;
 		display: flex;
 		flex-direction: column;
@@ -146,11 +146,11 @@
 			}
 		}
 
-		.table-footer {
-			display: flex;
-			justify-content: flex-end;
-			background: #fff;
-		}
+		// .table-footer {
+		// 	display: flex;
+		// 	justify-content: flex-end;
+		// 	background: #fff;
+		// }
 	}
 
     :deep(.el-table .cell) {

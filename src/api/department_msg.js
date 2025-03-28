@@ -1,6 +1,7 @@
 // 导入axios
 import instance from "@/http/index.js";
 
+
 // 获取部门消息id列表 参数 id department
 export const getDepartmentMsg = (id,department) => {
     return instance({

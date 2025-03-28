@@ -97,11 +97,7 @@ export const getMessage = id => {
 }
 
 // 更新点击率
-export const updateClick = data => {
-    const {
-		message_click_number,
-		id
-	} = data
+export const updateClick = (message_click_number,id) => {
 	return instance({
 		url: '/msg/updateClick',
 		method: 'POST',

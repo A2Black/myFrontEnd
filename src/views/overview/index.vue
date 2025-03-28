@@ -311,7 +311,7 @@
         // 加载动画
         uld.showLoading()
         let data = await getDayAndNumber()
-        console.log(data)
+        // console.log(data)
 		// 加载完成后隐藏
 		uld.hideLoading()
 		document.querySelector('.userlogin-all-day').setAttribute('_echarts_instance_', '')

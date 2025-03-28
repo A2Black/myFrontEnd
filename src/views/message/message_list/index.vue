@@ -54,7 +54,7 @@
                                     <template #default="{row}">
                                         <div>
                                             <el-button type="success" @click="editMessage(row)">编辑</el-button>
-                                            <el-button type="danger" @click="fisrtDeleteMessage(row.id)">删除</el-button>
+                                            <el-button type="danger" @click="fisrtDeleteMessage(row)">删除</el-button>
                                         </div>
                                     </template>
                                 </el-table-column>
@@ -106,7 +106,7 @@
                                     <template #default="{row}">
                                         <div>
                                             <el-button type="success" @click="editSystemMessage(row)">编辑</el-button>
-                                            <el-button type="danger" @click="fisrtDeleteMessage(row.id)">删除</el-button>
+                                            <el-button type="danger" @click="fisrtDeleteMessage(row)">删除</el-button>
                                         </div>
                                     </template>
                                 </el-table-column>
@@ -217,8 +217,8 @@
 
     // 初次删除公告/系统消息
     const deletem = ref()
-    const fisrtDeleteMessage = (id:number) => {
-    	bus.emit('firstdeleteMsgId',id)
+    const fisrtDeleteMessage = (row:any) => {
+    	bus.emit('firstdeleteMsgId',row)
     	deletem.value.open()
     }
 

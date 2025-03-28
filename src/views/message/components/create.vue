@@ -63,9 +63,13 @@
     import { ElMessage, FormProps } from 'element-plus'
     // 导入接口
     import { publishMessage, editMessage } from '@/api/message.js'
+	import { changeUserReadList } from "@/api/department_msg"
 	// 导入获取部门的api
     import { getDepartment } from '@/api/setting'
-
+	// 导入useMessageStore
+    import { useMessageStore } from '@/store/message'
+	// 创建实例
+	const messageStore = useMessageStore()
     
     // 创建labelPosition
     const labelPosition = ref<FormProps['labelPosition']>('right')
@@ -149,6 +153,8 @@
 					message: '发布公告成功',
 					type: 'success',
 				})
+				await changeUserReadList(res.department,res.id)
+				messageStore.returnReadList(localStorage.getItem('id'))
 				emit('success')
 				dialogFormVisible.value = false
 			} else {

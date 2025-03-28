@@ -25,10 +25,17 @@
         recover,
         deleteMessage
     } from '@/api/message'
+    import { changeUserReadListButDelete, changeUserReadList } from '@/api/department_msg'
     // 全局总线bus
     import { bus } from "@/utils/mitt.js"
     // 导入消息提示
     import { ElMessage } from 'element-plus'
+    // 导入useMessageStore
+    import { useMessageStore } from '@/store/message'
+	// 创建实例
+	const messageStore = useMessageStore()
+
+    // 控制弹窗打开
     const dialogFormVisible = ref(false)
     // 控制弹窗打开
     // 打开删除产品的弹窗
@@ -45,14 +52,19 @@
 
     // 消息id
     const messageId = ref()
+    // 接受部门
+    const messageReceiptDepartmen = ref()
+    
     // bus接受id
-    bus.on('firstdeleteMsgId',(id:number)=>{
+    bus.on('firstdeleteMsgId',(row:any)=>{
         title.value = '删除消息'
-        messageId.value = id
+        messageId.value = row.id
+        messageReceiptDepartmen.value = row.message_receipt_object
     })
-    bus.on('reMessageId',(id:number)=>{
+    bus.on('reMessageId',(row:any)=>{
         title.value = '还原操作'
-        messageId.value = id
+        messageId.value = row.id
+        messageReceiptDepartmen.value = row.message_receipt_object
     })
     bus.on('realDeleteId',(id:number)=>{
         title.value = '永久删除公告'
@@ -65,11 +77,15 @@
     const operationMessage = async() => {
         if (title.value == '删除消息') {
             const res = await firstDelete(messageId.value)
+            // console.log(messageReceiptDepartmen.value,messageId.value);
             if(res.status === 0){
                 ElMessage({
                     message: '删除公告成功！',
                     type: 'success',
                 })
+                await changeUserReadListButDelete(messageReceiptDepartmen.value,messageId.value)
+                // 部门消息删除成功
+                messageStore.returnReadList(localStorage.getItem('id'))
                 // 触发事件
                 emit('success')
                 // 关闭弹窗
@@ -87,6 +103,10 @@
                     message: '还原公告成功！',
                     type: 'success',
                 })
+                // 部门消息还原成功
+                await changeUserReadList(messageReceiptDepartmen.value,messageId.value)
+                // 更新用户未读列表，更新徽章
+                messageStore.returnReadList(localStorage.getItem('id'))
                 // 触发事件
                 emit('success')
                 // 关闭弹窗
