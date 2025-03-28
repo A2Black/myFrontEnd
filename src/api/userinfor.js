@@ -159,13 +159,14 @@ export const changeUserToAdmin = (id,identity) => {
  * @returns {Promise<string[]>} 
  */
 // 通过账号对用户进行搜索 
-export const searchUser = account => {
+export const searchUser = (account,identity) => {
     return instance({
         url:'user/searchUser',
         method:'POST',
         // 传入数据
         data: {
-            account
+            account,
+            identity
         }
     })
 }

@@ -97,7 +97,7 @@
     const tableData = ref([])
     // 搜索管理员
     const searchAdmin = async() => {
-        tableData.value = await searchUser(adminAccount.value)
+        tableData.value = await searchUser(adminAccount.value,"用户管理员")
         // console.log(tableData.value)
     }
 

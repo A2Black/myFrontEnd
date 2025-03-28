@@ -130,7 +130,7 @@
     // 通过账号搜索用户
     const searchuser = async() => {
         // 参数是账号
-        tableData.value = await searchUser(userAccount.value)
+        tableData.value = await searchUser(userAccount.value,"用户")
     }
 
     // 获取部门数据

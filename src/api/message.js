@@ -17,12 +17,19 @@ export const publishMessage = data => {
 	})
 }
 
+
+/**
+ * @returns {Promise<string[]>} 
+ */ 
 // 获取公司公告列表
-export const companyMessageList = () => {
+export const companyMessageList = department => {
     // 调用instance
     return instance({
         url:'msg/companyMessageList',
         method:'POST',
+		data: {
+			department
+		}
     })
 }
 

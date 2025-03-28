@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="dialogFormVisible" title="部门消息" width="40%" center draggable>
+    <el-dialog v-model="dialogFormVisible" title="部门消息" width="40%" center draggable destroy-on-close>
         <el-container>
             <el-aside width="416px">
                 <div class="message-list-wrapped">
@@ -9,7 +9,7 @@
                             <!-- 是否阅读标记 -->
                             <el-table-column width="10">
                                 <template #default="{row}">
-                                    <!-- "messageStore.read_list.length > 0 ? messageStore.read_list : readList -->
+                                    <!-- "(messageStore.read_list.length > 0 ? messageStore.read_list : readList) -->
                                     <div :class="(messageStore.read_list.length > 0 ? messageStore.read_list : readList).includes(row.id) ? 'noread' : 'readed'"></div>
                                 </template>
                             </el-table-column>

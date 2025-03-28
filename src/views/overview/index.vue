@@ -72,7 +72,7 @@
                         </div>
                     </el-col>
                     <el-col :span="6">
-                        <div class="button-area">
+                        <div class="button-area" @click="overviewToMessage">
                             <!-- SvgIcon图标 -->
                             <SvgIcon icon-name="message" style="width: 24px;height: 24px;"></SvgIcon>
                             <!-- 按钮名 -->
@@ -99,6 +99,7 @@
             <div class="userlogin-all-day footer-content-right"></div>
         </div>
      </div>
+     <overviewMsg ref='toMsg'></overviewMsg>
 </template>
 
 <script lang="ts" setup>
@@ -109,6 +110,7 @@
     import breadCrumb from '@/components/bread_crumb.vue'
     // 导入路由钩子函数
     import { useRouter } from 'vue-router'
+    import overviewMsg from '@/components/department_msg.vue'
     // 引入echarts
     import * as echarts from 'echarts';
     // 导入useUserInforStore
@@ -149,6 +151,12 @@
         })
         // 第二种跳转方法 使用模板字符串
         // router.push(`\/${where}`)
+    }
+
+    // 打开部门消息通知
+    const toMsg = ref()
+    const overviewToMessage = () =>{
+        toMsg.value.open()
     }
 
     // echarts图使用到的各类函数

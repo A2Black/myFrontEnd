@@ -27,25 +27,43 @@
             <!-- 公司公告 -->
             <div class="company-notice">
                 <span>公司公告</span>
-                <el-table :data="tableData" style="width: 100%" :show-header="false">    <!-- 隐藏表头 -->
-                    <el-table-column prop="date" label="Date" width="180" />
-                    <el-table-column prop="name" label="Name" width="180" />
-                    <el-table-column prop="address" label="Address" />
+                <el-table :data="companyData" style="width: 100%" :show-header="false" @row-dblclick="openCompanyMsg">    <!-- 隐藏表头 -->
+                    <el-table-column prop="message_title" label="公告主题">
+                        <template #default="{row}">
+                            <div class="title">{{ row.message_title }}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="message_level" label="等级">
+                        <template #default="{row}">
+                            <el-tag effect="dark" type="primary" round v-if="row.message_level=='一般'">{{ row.message_level }}</el-tag>
+                            <el-tag effect="dark" type="warning" round v-if="row.message_level=='重要'">{{ row.message_level }}</el-tag>
+                            <el-tag effect="dark" type="danger" round v-if="row.message_level=='紧急'">{{ row.message_level }}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="message_publish_department" label="发布部门" />
+                    <el-table-column prop="message_publish_time" label="发布时间" >
+                        <template #default="{row}">
+                            <div>{{ row.message_publish_time?.slice(0,10) }}</div>
+                        </template>
+                    </el-table-column>
                 </el-table>
             </div>
             <!-- 系统消息 -->
             <div class="system-message">
                 <span>系统消息</span>
-                <el-table :data="tableData" style="width: 100%" :show-header="false">
-                    <el-table-column prop="date" label="Date" width="180" />
-                    <el-table-column prop="name" label="Name" width="180" />
-                    <el-table-column prop="address" label="Address" />
-                </el-table>
+                <el-table :data="systemData" style="width: 100%" :show-header="false" @row-dblclick="openSystemMsg">
+                        <el-table-column prop="message_title" label="公告主题"  />
+                        <el-table-column prop="message_publish_time" label="发布时间" >
+                            <template #default="{row}">
+                                <div>{{ row.message_publish_time?.slice(0,10) }}</div>
+                            </template>
+                        </el-table-column>
+                    </el-table>
             </div>
-
         </div>
     </div>
     <introduce ref="intro"></introduce>
+    <homemMsg ref="homemsg"></homemMsg>
 </template>
 
 <script lang="ts" setup>
@@ -54,15 +72,29 @@
     import breadCrumb from '@/components/bread_crumb.vue'
     // 导入apigetAllSwiper
     import { getAllSwiper,getAllCompanyIntroduce } from '@/api/setting'
+    import { companyMessageList, systemMessageList } from '@/api/message'
     import { bus } from "@/utils/mitt.js"
+    // 导入一般组件
     import introduce from './components/introduce.vue'
+    import homemMsg from '@/components/home_message.vue'
     // 面包屑
     const breadcrumb = ref()
     // 面包屑参数
     const item = ref({
         first:'首页',
     })
-    const tableData = []
+
+    // 公司公告
+    const companyData = ref([])
+    // 系统消息
+    const systemData = ref([])
+
+    // 首页获取公司公告和系统消息
+    const getAllmessage = async() => {
+        companyData.value = await companyMessageList(localStorage.getItem('department'))
+        systemData.value = await systemMessageList()
+    }
+    getAllmessage()
 
     // 轮播图
 	const imageUrl = ref([]) 
@@ -93,6 +125,18 @@
         intro.value.open()
     }
 
+    // 打开弹窗
+    const homemsg = ref()
+    // 打开公司公告详情弹窗
+    const openCompanyMsg = (row:any)=>{
+        bus.emit('homeCompany',row)
+        homemsg.value.open()
+    }
+    // 打开系统消息详情弹窗
+    const openSystemMsg = (row:any)=>{
+    	bus.emit('homeSystem',row)
+        homemsg.value.open()
+    }
 </script>
 
 <style lang="scss" scoped>
@@ -103,12 +147,13 @@
         display: flex;
         flex-direction: column;
         margin-top: 8px;
-        
-        span {
+
+        > span {
             font-size: 14px;
             margin-bottom: 5px;
-            border-bottom: 1px solid #ea0709;
+            border-bottom: 1px solid #409eff;
         }
+
     }
 
     // 首页外壳
@@ -191,6 +236,12 @@
             }
         }
 
+    }
+
+    .title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     // 轮播图默认样式

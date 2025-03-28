@@ -104,6 +104,7 @@
     bus.on('createMId',(id:number)=>{
         if(id == 1){
             title.value = "发布公告"
+			// 清空富文本内容
             valueHtml.value = ''	
             formData.message_title = ''
 			formData.message_publish_department = '',
@@ -112,6 +113,7 @@
         }
         if(id == 2){
             title.value = "发布系统消息"
+			// 清空富文本内容
             valueHtml.value = ''	
             formData.message_title = ''
         }
@@ -170,6 +172,7 @@
 					message: '编辑公告成功',
 					type: 'success',
 				})
+				messageStore.returnReadList(localStorage.getItem('id'))
 				emit('success')
 				dialogFormVisible.value = false
 			} else {

@@ -97,7 +97,7 @@
     const tableData = ref([])
     // 搜索管理员
     const searchAdmin = async() => {
-        tableData.value = await searchUser(adminAccount.value)
+        tableData.value = await searchUser(adminAccount.value,'消息管理员')
     }
 
     // 创建分页数据
