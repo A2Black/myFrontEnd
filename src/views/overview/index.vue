@@ -341,8 +341,8 @@
             },
             series: [
                 {
-                data: data.number,
-                type: 'line'
+                    data: data.number,
+                    type: 'line'
                 }
             ]
         })

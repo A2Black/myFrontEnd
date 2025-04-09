@@ -31,6 +31,7 @@
                   <!-- 登录卡片底部外壳-->
                   <div class="footer-wrapped">
                     <div class="forget-password">
+                      <span>测试账号:2233123 密码:mima123456</span>
                       <span class="forget-password-button" @click="fogetPassWord">忘记密码?</span>
                     </div>
 

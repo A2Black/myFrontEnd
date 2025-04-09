@@ -10,9 +10,10 @@
                     <div class="account-infor-wrapped">
                         <span>头像：</span>
                         <div class="account-infor-content">
+                            <!-- class="avatar-uploader" action="http://127.0.0.1:3007/user/uploadAvatar" -->
                             <!-- action是上传头像的接口 -->
                             <el-upload
-                                class="avatar-uploader" action="http://127.0.0.1:3007/user/uploadAvatar"
+                                class="avatar-uploader" action="http://156.245.202.64:3007/user/uploadAvatar"
                                 :show-file-list="false"
                                 :on-success="handleAvatarSuccess"
                                 :before-upload="beforeAvatarUpload">
@@ -132,7 +133,7 @@
 							<div class="swiper-name">轮播图{{index+1}}:&nbsp;&nbsp;</div>
 							<el-upload
 								class="avatar-uploader"
-								action="http://127.0.0.1:3007/set/uploadSwiper"
+                                action="http://127.0.0.1:3007/set/uploadSwiper"
 								:show-file-list="false"
 								:on-success="handleSwiperSuccess"
 								:before-upload="beforeAvatarUpload" :data='item'>

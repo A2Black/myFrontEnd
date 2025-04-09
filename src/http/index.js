@@ -4,6 +4,7 @@ import axios from 'axios'
 const instance = axios.create({
   //后端url地址
   baseURL: 'http://127.0.0.1:3007',
+  // baseURL: 'http://156.245.202.64:3007',
   timeout: 6000,   //设置超时
   // 设置请求头
   headers: {
