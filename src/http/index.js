@@ -5,6 +5,7 @@ const instance = axios.create({
   //后端url地址
   baseURL: 'http://127.0.0.1:3007',
   timeout: 6000,   //设置超时
+  // 设置请求头
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
   }

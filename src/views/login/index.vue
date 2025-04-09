@@ -41,7 +41,7 @@
 
                    <!-- 还没有账号?马上注册 -->
                     <div class="footer-go-register">
-                      还没有账号?<span class="go-register">马上注册</span>
+                      还没有账号?<span class="go-register" @click="openRegister">马上注册</span>
                     </div>
                   </div>
                 </el-form>
@@ -99,6 +99,7 @@
   // 导入定义好的storage
   import { useUserInforStore } from '@/store/userinfo'
 
+  // 选中选项卡的name，默认是第一个
   const activeName = ref('first') //打开网页默认指向登录或是注册
 
   // 创建实例
@@ -187,6 +188,11 @@
   // 打开忘记密码弹窗
   const fogetPassWord = ()=>{
     fogetPass.value.open()
+  }
+
+  // 打开注册弹窗
+  const openRegister = ()=>{
+    activeName.value = 'second';
   }
 
 </script>

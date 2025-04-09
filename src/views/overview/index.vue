@@ -42,7 +42,7 @@
                     <el-col :span="6">
                         <div class="button-area" @click="routerTo('users_manage')">
                             <!-- SvgIcon图标 -->
-                            <SvgIcon icon-name="user" style="width: 24px;height: 24px;"></SvgIcon>
+                            <SvgIcon icon-name="user" style="width: 24px;height: 24px;" class="svgicon"></SvgIcon>
                             <!-- 按钮名 -->
                             <div class="button-name">用户管理</div>
                         </div>
@@ -50,7 +50,7 @@
                     <el-col :span="6">
                         <div class="button-area" @click="routerTo('product_manage')">
                             <!-- SvgIcon图标 -->
-                            <SvgIcon icon-name="product" style="width: 24px;height: 24px;"></SvgIcon>
+                            <SvgIcon icon-name="product" style="width: 24px;height: 24px;" class="svgicon"></SvgIcon>
                             <!-- 按钮名 -->
                             <div class="button-name" >产品管理</div>
                         </div>
@@ -58,7 +58,7 @@
                     <el-col :span="6">
                         <div class="button-area" @click="routerTo('message_list')">
                             <!-- SvgIcon图标 -->
-                            <SvgIcon icon-name="notice" style="width: 24px;height: 24px;"></SvgIcon>
+                            <SvgIcon icon-name="notice" style="width: 24px;height: 24px;" class="svgicon"></SvgIcon>
                             <!-- 按钮名 -->
                             <div class="button-name" >系统消息</div>
                         </div>
@@ -66,7 +66,7 @@
                     <el-col :span="6">
                         <div class="button-area" @click="routerTo('set')">
                             <!-- SvgIcon图标 -->
-                            <SvgIcon icon-name="me" style="width: 24px;height: 24px;"></SvgIcon>
+                            <SvgIcon icon-name="me" style="width: 24px;height: 24px;" class="svgicon"></SvgIcon>
                             <!-- 按钮名 -->
                             <div class="button-name" >个人信息</div>
                         </div>
@@ -74,7 +74,7 @@
                     <el-col :span="6">
                         <div class="button-area" @click="overviewToMessage">
                             <!-- SvgIcon图标 -->
-                            <SvgIcon icon-name="message" style="width: 24px;height: 24px;"></SvgIcon>
+                            <SvgIcon icon-name="message" style="width: 24px;height: 24px;" class="svgicon"></SvgIcon>
                             <!-- 按钮名 -->
                             <div class="button-name">部门信息</div>
                         </div>
@@ -82,7 +82,7 @@
                     <el-col :span="6">
                         <div class="button-area" @click="routerTo('set')">
                             <!-- SvgIcon图标 -->
-                            <SvgIcon icon-name="setting" style="width: 24px;height: 24px;"></SvgIcon>
+                            <SvgIcon icon-name="setting" style="width: 24px;height: 24px;" class="svgicon"></SvgIcon>
                             <!-- 按钮名 -->
                             <div class="button-name" >系统设置</div>
                         </div>
@@ -484,6 +484,10 @@
 				// 按钮变色
 				.button-area:hover {
 					background: #d9e9fb;
+                    .svgicon{
+                        transition: transform 0.5s ease;
+                        transform: scale(1.5);
+                   }
 				}
 
 			}

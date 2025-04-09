@@ -82,14 +82,11 @@
                     <el-avatar class="avatarFrame" :size="32" :src="userStore.imageUrl" />
                     <!-- 下拉菜单 -->
                     <el-dropdown>
-                        <span class="el-dropdown-link">
-                            <!-- SvgIcon图标 -->
-                            <SvgIcon icon-name="tools" style="width: 24px;height: 24px;"></SvgIcon>
-                        </span>
+                        <!-- SvgIcon图标 -->
+                        <SvgIcon icon-name="tools" style="width: 24px;height: 24px;" class="tools-icon"></SvgIcon>
                         <template #dropdown>
                             <el-dropdown-menu>
-                                <el-dropdown-item>账号设置</el-dropdown-item>
-                                <el-dropdown-item>修改密码</el-dropdown-item>
+                                <el-dropdown-item @click="accountSetting">账号设置</el-dropdown-item>
                                 <el-dropdown-item @click="backLogin">退出登录</el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
@@ -127,8 +124,13 @@
     const router = useRouter()
     // 退出登录
     const backLogin = ()=>{
-        // 路由跳转到首页
+        // 路由跳转到登录页
         router.replace('/login')
+    }
+    // 账号设置
+    const accountSetting = () => {
+        // 路由跳转到账号设置页面
+        router.push('/set')
     }
 
     // 打开部门消息通知
@@ -207,17 +209,33 @@
     background-color: #f1f3f6;
     border:1px solid #e4e4e7;
     }
-
+    
+    // 工具图标样式
+    .tools-icon {
+        transition: transform 0.3s ease;
+        
+        &:hover {
+            transform: scale(1.25);
+        }
+    }
 
     // 添加样式穿透设置悬浮时菜单选项背景色，无子菜单项
     :deep(.el-menu-item:hover){
         background-color: #d9e9fb;
         color: #409eff;
+        .el-icon {
+            transition: transform 0.5s ease;
+            transform: scale(1.25);
+        }
     }
     // 有子菜单项
     :deep(.el-sub-menu__title:hover){
         background-color: #d9e9fb;
         color: #409eff;
+        .el-icon {
+            transition: transform 0.5s ease;
+            transform: scale(1.25);
+        }
     }
 
 </style>

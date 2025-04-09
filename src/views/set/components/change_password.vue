@@ -3,7 +3,7 @@
     <el-dialog v-model="state.changePasswordDialog" title="修改密码" width="500" >
         <el-form class="login-form" label-width="auto" style="max-width: 400px" :label-position="labelPosition" :rules="rules">
             <el-form-item label="请输入你的旧密码" prop="oldPassword">
-            <el-input v-model="passwordData.oldPassword" placeholder="请输入你的旧密码" show-password/>
+            <el-input v-model="passwordData.oldPassword" placeholder="请输入你的旧密码" show-password autocomplete="new-password"/>
             </el-form-item>
             <el-form-item label="请输入你的新密码" prop="newPassword">
                 <!-- v-model是双向绑定 -->
@@ -53,6 +53,7 @@
     })
     // 打开修改密码的弹窗
     const open = ()=>{
+        // 打开弹窗
         state.changePasswordDialog = true
     }
     // 向外暴露这个api
@@ -62,11 +63,11 @@
 
     // 修改密码 id olaPassword newPassword
     const changeUserPassword = async() =>{
+        // 判断输入的密码是否为空
         if(passwordData.oldPassword && passwordData.newPassword){
             // localStorage.getItem能够获取存储在浏览器本地存储空间的数据，sessionStorag.getItem同理
             // 调用changePassword接口
             const res = await changePassword(localStorage.getItem('id'),passwordData.oldPassword,passwordData.newPassword)
-            console.log(res);
             if(res.status == 0){
                 ElMessage({
                 message: '密码修改成功！',
